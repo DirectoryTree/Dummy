@@ -2,10 +2,10 @@
 
 namespace DirectoryTree\Fakeable;
 
-use Illuminate\Support\Fluent;
 use Illuminate\Database\Eloquent\Factories\Factory as BaseFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Fluent;
 
 abstract class Factory extends BaseFactory
 {
@@ -26,7 +26,7 @@ abstract class Factory extends BaseFactory
         if ($instances instanceof Collection) {
             return $instances->map(function ($instance) {
                 return $this->resolveFactoryInstance($instance);
-            })->toArray();
+            });
         }
 
         return $this->resolveFactoryInstance($instances);

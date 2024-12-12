@@ -14,7 +14,7 @@ class FakeableInstanceStub
         public readonly array $attributes
     ) {}
 
-    protected static function toFakeInstance(Fluent $fluent): mixed
+    protected static function toFakeInstance(Fluent $fluent): self
     {
         return new static($fluent->all());
     }

@@ -25,10 +25,10 @@
     ],
     "require-dev": {
         "pestphp/pest": "^3.0",
-        "laravel/pint": "^1.18",
+        "laravel/pint": "^1.0",
         "fakerphp/faker": "^1.0",
-        "illuminate/support": "^11.0",
-        "illuminate/database": "^11.0",
+        "illuminate/support": "^9.0|^10.0|^11.0",
+        "illuminate/database": "^9.0|^10.0|^11.0",
         "orchestra/testbench": "^7.0|^8.0|^9.0"
     },
     "config": {

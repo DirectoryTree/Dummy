@@ -16,7 +16,7 @@ trait Fakeable
     {
         return static::toFakeInstance(
             FakeDataFactory::build(
-                fn ($faker) => array_merge(
+                fn (Generator $faker) => array_merge(
                     static::getFakeDefinition($faker, $attributes), $attributes
                 ),
             )

@@ -1,6 +1,9 @@
 <?php
 
+use DirectoryTree\Fakeable\Tests\Fixtures\FactoryClassStub;
 use DirectoryTree\Fakeable\Tests\Fixtures\FakeFactoryStub;
+use DirectoryTree\Fakeable\Tests\Fixtures\FakeFactoryWithCustomClassStub;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Fluent;
 
 it('can generate single instance', function () {
@@ -84,4 +87,22 @@ it('can set single attribute', function () {
         ->make();
 
     expect($instance->id)->toBe(1);
+});
+
+it('can create custom classes', function () {
+    $instance = FakeFactoryWithCustomClassStub::new()->make();
+
+    expect($instance)->toBeInstanceOf(FactoryClassStub::class);
+    expect($instance->name)->not->toBeNull();
+    expect($instance->email)->not->toBeNull();
+});
+
+it('can create many custom classes', function () {
+    $collection = FakeFactoryWithCustomClassStub::new()
+        ->count(5)
+        ->make();
+
+    expect($collection)->toBeInstanceOf(Collection::class);
+    expect($collection)->toHaveCount(5);
+    expect($collection->first())->toBeInstanceOf(FactoryClassStub::class);
 });

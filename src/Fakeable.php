@@ -15,10 +15,8 @@ trait Fakeable
     public static function fake(array $attributes = []): mixed
     {
         return static::toFakeInstance(
-            FakeDataFactory::build(
-                fn (Generator $faker) => array_merge(
-                    static::getFakeDefinition($faker, $attributes), $attributes
-                ),
+            ($factory = static::getFakeFactory())->make(
+                static::getFakeDefinition($factory->faker(), $attributes)
             )
         );
     }
@@ -29,6 +27,14 @@ trait Fakeable
     protected static function toFakeInstance(Fluent $fluent): mixed
     {
         return $fluent;
+    }
+
+    /**
+     * Get the fake data factory instance.
+     */
+    protected static function getFakeFactory(): Factory
+    {
+        return FakeDataFactory::new();
     }
 
     /**

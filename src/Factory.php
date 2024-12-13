@@ -32,7 +32,7 @@ abstract class Factory
         protected Collection $afterMaking = new Collection,
         protected Collection $afterCreating = new Collection,
     ) {
-        $this->faker = $this->withFaker();
+        $this->faker = $this->newFaker();
     }
 
     /**
@@ -278,9 +278,17 @@ abstract class Factory
     }
 
     /**
+     * Get the Faker instance.
+     */
+    public function faker(): Generator
+    {
+        return $this->faker ??= $this->newFaker();
+    }
+
+    /**
      * Get a new Faker instance.
      */
-    protected function withFaker(): Generator
+    protected function newFaker(): Generator
     {
         return Container::getInstance()->make(Generator::class);
     }

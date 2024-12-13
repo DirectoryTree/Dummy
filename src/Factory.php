@@ -151,17 +151,15 @@ abstract class Factory
      */
     protected function expandAttributes(array $definition): array
     {
-        return (new Collection($definition))
-            ->map(function ($attribute, $key) use (&$definition) {
-                if (is_callable($attribute) && ! is_string($attribute) && ! is_array($attribute)) {
-                    $attribute = $attribute($definition);
-                }
+        return (new Collection($definition))->map(function ($attribute, $key) use (&$definition) {
+            if (is_callable($attribute) && ! is_string($attribute) && ! is_array($attribute)) {
+                $attribute = $attribute($definition);
+            }
 
-                $definition[$key] = $attribute;
+            $definition[$key] = $attribute;
 
-                return $attribute;
-            })
-            ->all();
+            return $attribute;
+        })->all();
     }
 
     /**
@@ -223,13 +221,13 @@ abstract class Factory
     /**
      * Call the "after making" callbacks for the given class instances.
      */
-    protected function callAfterMaking(Collection $instances): void
+    protected function callAfterMaking(iterable $instances): void
     {
-        $instances->each(function ($instance) {
-            $this->afterMaking->each(function ($callback) use ($instance) {
-                $callback($instance);
-            });
-        });
+        foreach ($instances as $instance) {
+            $this->afterMaking->each(
+                fn ($callback) => $callback($instance)
+            );
+        }
     }
 
     /**
@@ -254,7 +252,7 @@ abstract class Factory
     }
 
     /**
-     * Get a new class instance.
+     * Create a new class instance.
      */
     protected function newClass(array $attributes = []): mixed
     {
@@ -264,11 +262,11 @@ abstract class Factory
     }
 
     /**
-     * Create a new collection.
+     * Create a new collection of instances.
      */
-    protected function newCollection(array $items = []): Collection
+    protected function newCollection(array $instances = []): mixed
     {
-        return new Collection($items);
+        return new Collection($instances);
     }
 
     /**

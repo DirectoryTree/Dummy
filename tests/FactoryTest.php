@@ -27,6 +27,18 @@ it('can accept attributes', function () {
     expect($instance->name)->toBe('foo');
 });
 
+it('can accept attribute closures', function () {
+    $instance = FakeFactoryStub::new()->make([
+        'foo' => function (array $attributes) {
+            expect($attributes)->toHaveKeys(['name', 'email']);
+
+            return 'bar';
+        },
+    ]);
+
+    expect($instance->foo)->toBe('bar');
+});
+
 it('can make raw attributes', function () {
     $raw = FakeFactoryStub::new()->count(5)->raw();
 

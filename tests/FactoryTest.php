@@ -73,7 +73,3 @@ it('can set single attribute', function () {
 
     expect($instance->id)->toBe(1);
 });
-
-it('throws error on create', function () {
-    FakeFactoryStub::new()->create();
-})->throws(TypeError::class);

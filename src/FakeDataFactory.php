@@ -18,7 +18,7 @@ class FakeDataFactory extends Factory
     }
 
     /**
-     * Get the definition's state.
+     * Get the class' fake definition's state.
      */
     public function definition(): array
     {

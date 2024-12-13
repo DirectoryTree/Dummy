@@ -28,6 +28,7 @@ abstract class Factory
      */
     public function __construct(
         protected ?int $count = null,
+        protected ?Closure $using = null,
         protected Collection $states = new Collection,
         protected Collection $afterMaking = new Collection,
         protected Collection $afterCreating = new Collection,
@@ -119,7 +120,13 @@ abstract class Factory
      */
     protected function makeInstance(): mixed
     {
-        return $this->newClass($this->getExpandedAttributes());
+        $attributes = $this->getExpandedAttributes();
+
+        if ($this->using) {
+            return ($this->using)($this->faker, $attributes);
+        }
+
+        return $this->newClass($attributes);
     }
 
     /**
@@ -209,6 +216,16 @@ abstract class Factory
     }
 
     /**
+     * Set the callback to be used to create the class instance.
+     */
+    public function using(Closure $callback): static
+    {
+        return $this->newInstance([
+            'using' => $callback,
+        ]);
+    }
+
+    /**
      * Add a new "after making" callback to the class definition.
      */
     public function afterMaking(Closure $callback): static
@@ -245,6 +262,7 @@ abstract class Factory
     {
         return new static(...array_values(array_merge([
             'count' => $this->count,
+            'using' => $this->using,
             'states' => $this->states,
             'afterMaking' => $this->afterMaking,
             'afterCreating' => $this->afterCreating,

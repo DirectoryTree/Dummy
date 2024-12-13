@@ -2,7 +2,7 @@
 
 namespace DirectoryTree\Fakeable;
 
-class FakeDataFactory extends Factory
+class StaticFactory extends Factory
 {
     /**
      * Define the class' default state.

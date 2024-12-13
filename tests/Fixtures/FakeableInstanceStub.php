@@ -2,24 +2,23 @@
 
 namespace DirectoryTree\Fakeable\Tests\Fixtures;
 
-use DirectoryTree\Fakeable\Fakeable;
+use DirectoryTree\Fakeable\HasFactory;
 use Faker\Generator;
-use Illuminate\Support\Fluent;
 
 class FakeableInstanceStub
 {
-    use Fakeable;
+    use HasFactory;
 
     public function __construct(
         public readonly array $attributes
     ) {}
 
-    protected static function toFakeInstance(Fluent $fluent): self
+    protected static function toFactoryInstance(array $attributes): self
     {
-        return new static($fluent->all());
+        return new static($attributes);
     }
 
-    protected static function getFakeDefinition(Generator $faker, array $attributes = []): array
+    protected static function getFactoryDefinition(Generator $faker): array
     {
         return [
             'name' => $faker->name(),

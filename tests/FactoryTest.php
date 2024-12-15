@@ -15,7 +15,9 @@ it('can generate single instance', function () {
 it('can generate multiple instances in a collection', function () {
     $collection = FactoryStub::new()->count(5)->make();
 
-    $collection->ensure(Fluent::class);
+    $collection->each(
+        fn ($instance) => expect($instance)->toBeInstanceOf(Fluent::class)
+    );
 
     expect($collection)->toHaveCount(5);
 });

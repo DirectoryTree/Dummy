@@ -1,28 +1,35 @@
 <p align="center">
-<img src="https://github.com/DirectoryTree/Fakeable/blob/master/art/logo.svg" width="250">
+<img src="https://github.com/DirectoryTree/Dummy/blob/master/art/logo.svg" width="250">
 </p>
 
 <p align="center">
-Generate class instances populated with fake data using Eloquent Factories
+Generate class instances populated with fake data using Faker
 </p>
 
 <p align="center">
-<a href="https://github.com/directorytree/fakeable/actions" target="_blank"><img src="https://img.shields.io/github/actions/workflow/status/directorytree/fakeable/run-tests.yml?branch=master&style=flat-square"/></a>
-<a href="https://packagist.org/packages/directorytree/fakeable" target="_blank"><img src="https://img.shields.io/packagist/v/directorytree/fakeable.svg?style=flat-square"/></a>
-<a href="https://packagist.org/packages/directorytree/fakeable" target="_blank"><img src="https://img.shields.io/packagist/dt/directorytree/fakeable.svg?style=flat-square"/></a>
-<a href="https://packagist.org/packages/directorytree/fakeable" target="_blank"><img src="https://img.shields.io/packagist/l/directorytree/fakeable.svg?style=flat-square"/></a>
+<a href="https://github.com/directorytree/dummy/actions" target="_blank"><img src="https://img.shields.io/github/actions/workflow/status/directorytree/dummy/run-tests.yml?branch=master&style=flat-square"/></a>
+<a href="https://packagist.org/packages/directorytree/dummy" target="_blank"><img src="https://img.shields.io/packagist/v/directorytree/dummy.svg?style=flat-square"/></a>
+<a href="https://packagist.org/packages/directorytree/dummy" target="_blank"><img src="https://img.shields.io/packagist/dt/directorytree/dummy.svg?style=flat-square"/></a>
+<a href="https://packagist.org/packages/directorytree/dummy" target="_blank"><img src="https://img.shields.io/packagist/l/directorytree/dummy.svg?style=flat-square"/></a>
 </p>
 
 ---
 
-Fakeable allows you to use the syntax you're familiar with to generate class instances with fake data. 
+Dummy allows you to generate class instances with fake data using [Faker](https://github.com/FakerPHP/Faker).
 
 ## Index
 
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Introduction](#introduction)
+- [Setup](#setup)
+    - [HasFactory Trait](#hasfactory-trait)
+    - [Class Factory](#class-factory)
 - [Usage](#usage)
-    - [](#)
+    - [Factory States](#factory-states)
+    - [Factory Callbacks](#factory-callbacks)
+    - [Factory Sequences](#factory-sequences)
+    - [Factory Collections](#factory-collections)
 
 ## Requirements
 
@@ -34,7 +41,274 @@ Fakeable allows you to use the syntax you're familiar with to generate class ins
 You can install the package via composer:
 
 ```bash
-composer require directorytree/fakeable
+composer require directorytree/dummy
+```
+
+## Introduction
+
+Consider you have a class representing a restaurant reservation:
+
+```php
+namespace App\Data;
+
+class Reservation
+{
+    /**
+     * Create a new reservation instance.
+     */
+    public function __construct(
+        public string $name,
+        public string $email,
+        public DateTime $date,
+    ) {}
+}
+```
+
+To make dummy instances of this class during testing, you have to manually populate it with dummy data.
+
+This can quickly get out of hand as your class grows, and you may find yourself writing the same dummy data generation code over and over again.
+
+Dummy provides you with a simple way to generate dummy instances of your classes using a simple API:
+
+```php
+// Generate one instance:
+$reservation = Reservation::factory()->make();
+
+// Generate multiple instances:
+$collection = Reservation::factory()->count(5)->make();
+```
+
+## Setup
+
+Dummy provides you two different ways to generate classes with dummy data.
+
+### HasFactory Trait
+
+The `HasFactory` trait is applied directly to the class you would like to generate dummy instances of.
+
+To use the `HasFactory` trait, you must implement the `toFactoryInstance` and `getFactoryDefinition` methods:
+
+> [!note]
+> The `HasFactory` trait does not provide you the capability of defining state methods or callbacks.
+> If you need this functionality, you should define a separate `Factory` class instead.
+
+```php
+namespace App\Data;
+
+use DateTime;
+use Faker\Generator;
+use DirectoryTree\Dummy\HasFactory;
+
+class Reservation
+{
+    use HasFactory;
+    
+    /**
+     * Create a new reservation instance.
+     */
+    public function __construct(
+        public string $name,
+        public string $email,
+        public DateTime $date,
+    ) {}
+
+    /**
+     * Create a new instance of the class using the factory definition.
+     */
+    protected static function toFactoryInstance(array $attributes): static
+    {
+        return new static(
+            $fluent->name,
+            $fluent->email,
+            $fluent->datetime,
+        );
+    }
+    
+    /**
+     * Define the factory's default state.
+     */
+    protected function getFactoryDefinition(Generator $faker): array
+    {
+        return [
+            'name' => $faker->name(),
+            'email' => $faker->email(),
+            'datetime' => $faker->dateTime(),
+        ];
+    }
+}
+```
+
+Once implemented, you may call the `Reservation::factory()` method to create a new dummy factory:
+
+```php
+$factory = Reservation::factory();
+```
+
+### Class Factory
+
+If you need more control over the dummy data generation process, you may use the `Factory` class.
+
+The `Factory` class is used to generate dummy instances of a class using a separate factory definition.
+
+To use the `Factory` class, you must extend it with your own factory class and override the `definition` and `generate` methods:
+
+```php
+namespace App\Factories;
+
+use App\Data\Reservation;
+use DirectoryTree\Dummy\Factory;
+
+class ReservationFactory extends Factory
+{
+    /**
+     * Define the factory's default state.
+     */
+    protected function definition(): array
+    {
+        return [
+            'name' => $this->faker->name(),
+            'email' => $this->faker->email(),
+            'datetime' => $this->faker->dateTime(),
+        ];
+    }
+    
+    /**
+     * Generate a new instance of the class.
+     */
+    protected function generate(array $attributes): Reservation
+    {
+        return new Reservation(
+            $attributes['name'],
+            $attributes['email'],
+            $attributes['datetime'],
+        );
+    }
+}
 ```
 
 ## Usage
+
+Once you've defined a factory, you can generate dummy instances of your class using the `make` method:
+
+```php
+// Using the trait:
+$reservation = Reservation::factory()->make();
+
+// Using the factory class:
+$reservation = ReservationFactory::new()->make();
+```
+
+To add or override attributes in your definition, you may pass an array of attributes to the `make` method:
+
+```php
+$reservation = Reservation::factory()->make([
+    'name' => 'John Doe',
+]);
+```
+
+To generate multiple instances of the class, you may use the `count` method:
+
+> This will return a `Illuminate\SupportCollection` instance containing the generated classes.
+
+```php
+$collection = Reservation::factory()->count(5)->make();
+```
+
+### Factory States
+
+State manipulation methods allow you to define discrete modifications that can be applied to
+your dummy factories in any combination. For example, your `App\Factories\Reservation` factory
+might contain a `tomorrow` state method that modifies one of its default attribute values.
+
+State transformation methods typically call the `state` method provided by the base factory 
+class. The state method accepts a closure which will receive the array of raw attributes
+defined for the factory and should return an array of attributes to modify:
+
+```php
+class ReservationFactory extends Factory
+{
+    // ...
+
+    /**
+     * Indicate that the reservation is for tomorrow.
+     */
+    public function tomorrow(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return ['datetime' => new DateTime('tomorrow')];
+        });
+    }
+}
+```
+
+### Factory Callbacks
+
+Factory callbacks are registered using the `afterMaking` and `afterCreating` methods and allow 
+you to perform additional tasks after making or creating a model. You should register these 
+callbacks by defining a `configure` method on your factory class. This method will be 
+automatically called when the factory is instantiated:
+
+```php
+namespace App\Factories;
+ 
+use App\Data\Reservation;
+use DirectoryTree\Dummy\Factory;
+ 
+class ReservationFactory extends Factory
+{
+    // ...
+    
+    /**
+     * Configure the dummy factory.
+     */
+    protected function configure(): static
+    {
+        return $this->afterMaking(function (Reservation $reservation) {
+            // ...
+        })->afterCreating(function (Reservation $reservation) {
+            // ...
+        });
+    }
+}
+```
+
+### Factory Sequences
+
+Sometimes you may wish to alternate the value of a given attribute for each generated class.
+You may accomplish this by defining a state transformation as a `sequence`:
+
+```php
+Reservation::factory()
+    ->count(3)
+     ->sequence(
+        ['datetime' => new Datetime('tomorrow')],
+        ['datetime' => new Datetime('next week')],
+        ['datetime' => new Datetime('next month')],
+    )
+    ->make();
+```
+
+### Factory Collections
+
+If you need to customize the collection of classes generated by a factory, you may override the `collect` method:
+
+```php
+namespace App\Factories;
+
+use App\Collections\ReservationCollection;
+ 
+// ...
+ 
+class ReservationFactory extends Factory
+{
+    // ...
+    
+    /**
+     * Create a new collection of classes.
+     */
+    public function collect(array $instances = []): ReservationCollection
+    {
+        return new ReservationCollection($instances);
+    }
+}
+```

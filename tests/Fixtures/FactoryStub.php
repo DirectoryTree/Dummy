@@ -6,7 +6,7 @@ use DirectoryTree\Dummy\Factory;
 
 class FactoryStub extends Factory
 {
-    public function definition(): array
+    protected function definition(): array
     {
         return [
             'name' => $this->faker->name(),

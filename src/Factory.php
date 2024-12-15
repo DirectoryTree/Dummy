@@ -32,15 +32,7 @@ class Factory
     }
 
     /**
-     * Define the class' default state.
-     */
-    public function definition(): array
-    {
-        return [];
-    }
-
-    /**
-     * Get a new factory instance for the given attributes.
+     * Get a new dummy factory instance for the given attributes.
      */
     public static function new(Closure|array $attributes = []): static
     {
@@ -48,7 +40,7 @@ class Factory
     }
 
     /**
-     * Get a new factory instance for the given number of classes.
+     * Get a new dummy factory instance for the given number of classes.
      */
     public static function times(int $count): static
     {
@@ -56,11 +48,35 @@ class Factory
     }
 
     /**
-     * Configure the factory.
+     * Define the dummy class' default state.
      */
-    public function configure(): static
+    protected function definition(): array
+    {
+        return [];
+    }
+
+    /**
+     * Generate a new dummy class instance.
+     */
+    protected function generate(array $attributes): mixed
+    {
+        return new Fluent($attributes);
+    }
+
+    /**
+     * Configure the dummy factory.
+     */
+    protected function configure(): static
     {
         return $this;
+    }
+
+    /**
+     * Create a new collection of dummy instances.
+     */
+    protected function collect(array $instances = []): mixed
+    {
+        return new Collection($instances);
     }
 
     /**
@@ -88,15 +104,15 @@ class Factory
 
         if ($this->count === null) {
             return tap($this->makeInstance(), function ($instance) {
-                $this->callAfterMaking($this->newCollection([$instance]));
+                $this->callAfterMaking($this->collect([$instance]));
             });
         }
 
         if ($this->count < 1) {
-            return $this->newCollection();
+            return $this->collect();
         }
 
-        $instances = $this->newCollection(array_map(function () {
+        $instances = $this->collect(array_map(function () {
             return $this->makeInstance();
         }, range(1, $this->count)));
 
@@ -116,7 +132,7 @@ class Factory
             return ($this->using)($this->faker, $attributes);
         }
 
-        return $this->newClass($attributes);
+        return $this->generate($attributes);
     }
 
     /**
@@ -238,7 +254,7 @@ class Factory
     }
 
     /**
-     * Specify how many classes should be generated.
+     * Specify how many dummy classes should be generated.
      */
     public function count(?int $count): static
     {
@@ -257,22 +273,6 @@ class Factory
             'afterMaking' => $this->afterMaking,
             'afterCreating' => $this->afterCreating,
         ], $arguments)));
-    }
-
-    /**
-     * Create a new class instance.
-     */
-    protected function newClass(array $attributes = []): mixed
-    {
-        return new Fluent($attributes);
-    }
-
-    /**
-     * Create a new collection of instances.
-     */
-    protected function newCollection(array $instances = []): mixed
-    {
-        return new Collection($instances);
     }
 
     /**

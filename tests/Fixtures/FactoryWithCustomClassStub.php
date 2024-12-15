@@ -6,7 +6,7 @@ use DirectoryTree\Dummy\Factory;
 
 class FactoryWithCustomClassStub extends Factory
 {
-    public function definition(): array
+    protected function definition(): array
     {
         return [
             'name' => $this->faker->name(),
@@ -14,7 +14,7 @@ class FactoryWithCustomClassStub extends Factory
         ];
     }
 
-    protected function newClass(array $attributes = []): mixed
+    protected function generate(array $attributes = []): FactoryClassStub
     {
         return new FactoryClassStub(
             $attributes['name'],

@@ -237,9 +237,9 @@ class ReservationFactory extends Factory
 
 ### Factory Callbacks
 
-Factory callbacks are registered using the `afterMaking` and `afterCreating` methods and allow 
-you to perform additional tasks after making or creating a model. You should register these 
-callbacks by defining a `configure` method on your factory class. This method will be 
+Factory callbacks are registered using the `afterMaking` method and allow you to perform 
+additional tasks after making or creating a class. You should register these callbacks
+by defining a `configure` method on your factory class. This method will be 
 automatically called when the factory is instantiated:
 
 ```php
@@ -253,8 +253,6 @@ class ReservationFactory extends Factory
     protected function configure(): static
     {
         return $this->afterMaking(function (Reservation $reservation) {
-            // ...
-        })->afterCreating(function (Reservation $reservation) {
             // ...
         });
     }

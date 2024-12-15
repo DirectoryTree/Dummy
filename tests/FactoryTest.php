@@ -2,6 +2,7 @@
 
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryClassStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryStub;
+use DirectoryTree\Dummy\Tests\Fixtures\FactoryWithConfigurationStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryWithCustomClassStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryWithStateStub;
 use Illuminate\Support\Collection;
@@ -118,4 +119,10 @@ it('can use state callbacks', function () {
     expect($instance->role)->toBe('admin');
     expect($instance->name)->toBe('Admin');
     expect($instance->email)->toBe('admin@example.com');
+});
+
+it('can use after making callbacks', function () {
+    $instance = FactoryWithConfigurationStub::new()->make();
+
+    expect($instance->name)->toBe('Custom');
 });

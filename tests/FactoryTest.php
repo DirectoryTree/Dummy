@@ -3,6 +3,7 @@
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryClassStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryWithCustomClassStub;
+use DirectoryTree\Dummy\Tests\Fixtures\FactoryWithStateStub;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Fluent;
 
@@ -107,4 +108,14 @@ it('can create many custom classes', function () {
     expect($collection)->toBeInstanceOf(Collection::class);
     expect($collection)->toHaveCount(5);
     expect($collection->first())->toBeInstanceOf(FactoryClassStub::class);
+});
+
+it('can use state callbacks', function () {
+    $instance = FactoryWithStateStub::new()
+        ->admin()
+        ->make();
+
+    expect($instance->role)->toBe('admin');
+    expect($instance->name)->toBe('Admin');
+    expect($instance->email)->toBe('admin@example.com');
 });

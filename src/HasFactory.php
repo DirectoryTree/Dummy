@@ -1,13 +1,13 @@
 <?php
 
-namespace DirectoryTree\Fakeable;
+namespace DirectoryTree\Dummy;
 
 use Faker\Generator;
 
 trait HasFactory
 {
     /**
-     * Create fake data for the instance.
+     * Create a new dummy factory.
      */
     public static function factory(array $attributes = []): Factory
     {
@@ -25,16 +25,16 @@ trait HasFactory
      */
     protected static function newFactory(array $attributes): Factory
     {
-        return StaticFactory::new($attributes);
+        return Factory::new($attributes);
     }
 
     /**
-     * Transform the fake data into a class instance.
+     * Transform the dummy data into a class instance.
      */
     abstract protected static function toFactoryInstance(array $attributes): mixed;
 
     /**
-     * Define the fake data definition.
+     * Define the dummy data definition.
      */
     abstract protected static function getFactoryDefinition(Generator $faker): array;
 }

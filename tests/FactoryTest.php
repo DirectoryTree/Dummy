@@ -1,19 +1,19 @@
 <?php
 
-use DirectoryTree\Fakeable\Tests\Fixtures\FactoryClassStub;
-use DirectoryTree\Fakeable\Tests\Fixtures\FakeFactoryStub;
-use DirectoryTree\Fakeable\Tests\Fixtures\FakeFactoryWithCustomClassStub;
+use DirectoryTree\Dummy\Tests\Fixtures\FactoryClassStub;
+use DirectoryTree\Dummy\Tests\Fixtures\FactoryStub;
+use DirectoryTree\Dummy\Tests\Fixtures\FactoryWithCustomClassStub;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Fluent;
 
 it('can generate single instance', function () {
-    $instance = FakeFactoryStub::new()->make();
+    $instance = FactoryStub::new()->make();
 
     expect($instance)->toBeInstanceOf(Fluent::class);
 });
 
 it('can generate multiple instances in a collection', function () {
-    $collection = FakeFactoryStub::new()->count(5)->make();
+    $collection = FactoryStub::new()->count(5)->make();
 
     $collection->ensure(Fluent::class);
 
@@ -21,7 +21,7 @@ it('can generate multiple instances in a collection', function () {
 });
 
 it('can accept attributes', function () {
-    $instance = FakeFactoryStub::new([
+    $instance = FactoryStub::new([
         'id' => 1,
         'name' => 'foo',
     ])->make();
@@ -31,7 +31,7 @@ it('can accept attributes', function () {
 });
 
 it('can accept attribute closures', function () {
-    $instance = FakeFactoryStub::new()->make([
+    $instance = FactoryStub::new()->make([
         'foo' => function (array $attributes) {
             expect($attributes)->toHaveKeys(['name', 'email']);
 
@@ -43,14 +43,14 @@ it('can accept attribute closures', function () {
 });
 
 it('can make raw attributes', function () {
-    $raw = FakeFactoryStub::new()->count(5)->raw();
+    $raw = FactoryStub::new()->count(5)->raw();
 
     expect($raw)->toBeArray();
     expect($raw[0])->toHaveKeys(['name', 'email']);
 });
 
 it('can make many raw attributes', function () {
-    $raws = FakeFactoryStub::new()->count(5)->raw();
+    $raws = FactoryStub::new()->count(5)->raw();
 
     expect($raws)->toBeArray();
     expect($raws)->toHaveCount(5);
@@ -58,7 +58,7 @@ it('can make many raw attributes', function () {
 });
 
 it('can accept sequence', function () {
-    $collection = FakeFactoryStub::new()
+    $collection = FactoryStub::new()
         ->count(3)
         ->sequence(
             ['id' => 1],
@@ -74,7 +74,7 @@ it('can accept sequence', function () {
 });
 
 it('can use state', function () {
-    $instance = FakeFactoryStub::new()
+    $instance = FactoryStub::new()
         ->withId(1)
         ->make();
 
@@ -82,7 +82,7 @@ it('can use state', function () {
 });
 
 it('can set single attribute', function () {
-    $instance = FakeFactoryStub::new()
+    $instance = FactoryStub::new()
         ->set('id', 1)
         ->make();
 
@@ -90,7 +90,7 @@ it('can set single attribute', function () {
 });
 
 it('can create custom classes', function () {
-    $instance = FakeFactoryWithCustomClassStub::new()->make();
+    $instance = FactoryWithCustomClassStub::new()->make();
 
     expect($instance)->toBeInstanceOf(FactoryClassStub::class);
     expect($instance->name)->not->toBeNull();
@@ -98,7 +98,7 @@ it('can create custom classes', function () {
 });
 
 it('can create many custom classes', function () {
-    $collection = FakeFactoryWithCustomClassStub::new()
+    $collection = FactoryWithCustomClassStub::new()
         ->count(5)
         ->make();
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace DirectoryTree\Fakeable\Tests\Fixtures;
+namespace DirectoryTree\Dummy\Tests\Fixtures;
 
-use DirectoryTree\Fakeable\Factory;
+use DirectoryTree\Dummy\Factory;
 
-class FakeFactoryStub extends Factory
+class FactoryStub extends Factory
 {
     public function definition(): array
     {

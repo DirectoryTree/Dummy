@@ -1,12 +1,12 @@
 <?php
 
-namespace DirectoryTree\Fakeable\Tests\Fixtures;
+namespace DirectoryTree\Dummy\Tests\Fixtures;
 
-use DirectoryTree\Fakeable\HasFactory;
+use DirectoryTree\Dummy\HasFactory;
 use Faker\Generator;
 use Illuminate\Support\Fluent;
 
-class FakeableStub
+class HasFactoryStub
 {
     use HasFactory;
 

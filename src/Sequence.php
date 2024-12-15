@@ -1,6 +1,6 @@
 <?php
 
-namespace DirectoryTree\Fakeable;
+namespace DirectoryTree\Dummy;
 
 use Countable;
 

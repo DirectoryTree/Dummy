@@ -1,5 +1,5 @@
 {
-    "name": "directorytree/fakeable",
+    "name": "directorytree/dummy",
     "type": "library",
     "license": "MIT",
     "archive": {
@@ -9,12 +9,12 @@
     },
     "autoload": {
         "psr-4": {
-            "DirectoryTree\\Fakeable\\": "src/"
+            "DirectoryTree\\Dummy\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "DirectoryTree\\Fakeable\\Tests\\": "tests/"
+            "DirectoryTree\\Dummy\\Tests\\": "tests/"
         }
     },
     "authors": [

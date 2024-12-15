@@ -1,18 +1,18 @@
 <?php
 
-use DirectoryTree\Fakeable\Tests\Fixtures\FakeableInstanceStub;
-use DirectoryTree\Fakeable\Tests\Fixtures\FakeableStub;
+use DirectoryTree\Dummy\Tests\Fixtures\HasFactoryInstanceStub;
+use DirectoryTree\Dummy\Tests\Fixtures\HasFactoryStub;
 use Illuminate\Support\Fluent;
 
 it('can generate fake fluent instance', function () {
-    $instance = FakeableStub::factory()->make();
+    $instance = HasFactoryStub::factory()->make();
 
     expect($instance)->toBeInstanceOf(Fluent::class);
     expect($instance->toArray())->toHaveKeys(['name', 'email']);
 });
 
 it('can overwrite fake fluent instance data', function () {
-    $instance = FakeableStub::factory()->make([
+    $instance = HasFactoryStub::factory()->make([
         'name' => 'John Doe',
     ]);
 
@@ -20,8 +20,8 @@ it('can overwrite fake fluent instance data', function () {
 });
 
 it('can generate fake instance of self', function () {
-    $instance = FakeableInstanceStub::factory()->make();
+    $instance = HasFactoryInstanceStub::factory()->make();
 
-    expect($instance)->toBeInstanceOf(FakeableInstanceStub::class);
+    expect($instance)->toBeInstanceOf(HasFactoryInstanceStub::class);
     expect($instance->attributes)->toHaveKeys(['name', 'email']);
 });

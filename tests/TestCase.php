@@ -1,6 +1,6 @@
 <?php
 
-namespace DirectoryTree\Fakeable\Tests;
+namespace DirectoryTree\Dummy\Tests;
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
 

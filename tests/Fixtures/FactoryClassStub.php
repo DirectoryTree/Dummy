@@ -1,6 +1,6 @@
 <?php
 
-namespace DirectoryTree\Fakeable\Tests\Fixtures;
+namespace DirectoryTree\Dummy\Tests\Fixtures;
 
 class FactoryClassStub
 {

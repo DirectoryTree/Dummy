@@ -26,7 +26,6 @@ class Factory
         protected ?Closure $using = null,
         protected Collection $states = new Collection,
         protected Collection $afterMaking = new Collection,
-        protected Collection $afterCreating = new Collection,
     ) {
         $this->faker = $this->newFaker();
     }
@@ -271,7 +270,6 @@ class Factory
             'using' => $this->using,
             'states' => $this->states,
             'afterMaking' => $this->afterMaking,
-            'afterCreating' => $this->afterCreating,
         ], $arguments)));
     }
 

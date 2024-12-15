@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-Generate class instances populated with fake data using Faker
+Generate class instances populated with dummy data using <a href="https://github.com/FakerPHP/Faker" target="_blank">Faker</a>
 </p>
 
 <p align="center">
@@ -14,8 +14,6 @@ Generate class instances populated with fake data using Faker
 </p>
 
 ---
-
-Dummy allows you to generate class instances with fake data using [Faker](https://github.com/FakerPHP/Faker).
 
 ## Index
 

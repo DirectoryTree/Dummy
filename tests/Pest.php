@@ -11,4 +11,4 @@
 |
 */
 
-pest()->uses(DirectoryTree\Dummy\Tests\TestCase::class)->in(__DIR__);
+uses(DirectoryTree\Dummy\Tests\TestCase::class)->in(__DIR__);

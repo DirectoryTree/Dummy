@@ -32,7 +32,6 @@ Generate class instances populated with dummy data using <a href="https://github
 ## Requirements
 
 - PHP >= 8.0
-- Laravel >= 9.0
 
 ## Installation
 

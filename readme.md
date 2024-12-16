@@ -214,9 +214,11 @@ $collection = Reservation::factory()->count(5)->make();
 
 ### Factory States
 
-State manipulation methods allow you to define discrete modifications that can be applied to
-your dummy factories in any combination. For example, your `App\Factories\Reservation` factory
-might contain a `tomorrow` state method that modifies one of its default attribute values:
+State manipulation methods allow you to define discrete modifications 
+that can be applied to your dummy factories in any combination.
+
+For example, your `App\Factories\Reservation` factory might contain a `tomorrow`
+state method that modifies one of its default attribute values:
 
 ```php
 class ReservationFactory extends Factory
@@ -262,7 +264,9 @@ class ReservationFactory extends Factory
 ### Factory Sequences
 
 Sometimes you may wish to alternate the value of a given attribute for each generated 
-class. You may accomplish this by defining a state transformation as a `sequence`:
+class. 
+
+You may accomplish this by defining a state transformation as a `sequence`:
 
 ```php
 Reservation::factory()

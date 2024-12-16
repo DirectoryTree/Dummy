@@ -3,10 +3,10 @@
 namespace DirectoryTree\Dummy;
 
 use Closure;
+use Faker\Factory as FakerFactory;
 use Faker\Generator;
 use Illuminate\Container\Container;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Fluent;
 use Illuminate\Support\Traits\Conditionable;
 
 class Factory
@@ -59,7 +59,7 @@ class Factory
      */
     protected function generate(array $attributes): mixed
     {
-        return new Fluent($attributes);
+        return new Data($attributes);
     }
 
     /**
@@ -286,6 +286,10 @@ class Factory
      */
     protected function newFaker(): Generator
     {
-        return Container::getInstance()->make(Generator::class);
+        if (class_exists(Container::class)) {
+            return Container::getInstance()->make(Generator::class);
+        }
+
+        return FakerFactory::create();
     }
 }

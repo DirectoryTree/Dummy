@@ -2,8 +2,8 @@
 
 namespace DirectoryTree\Dummy\Tests\Fixtures;
 
+use DirectoryTree\Dummy\Data;
 use DirectoryTree\Dummy\Factory;
-use Illuminate\Support\Fluent;
 
 class FactoryWithConfigurationStub extends Factory
 {
@@ -17,8 +17,8 @@ class FactoryWithConfigurationStub extends Factory
 
     protected function configure(): static
     {
-        return $this->afterMaking(function (Fluent $fluent) {
-            $fluent->name = 'Custom';
+        return $this->afterMaking(function (Data $data) {
+            $data->name = 'Custom';
         });
     }
 }

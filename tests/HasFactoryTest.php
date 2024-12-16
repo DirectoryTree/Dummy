@@ -1,17 +1,17 @@
 <?php
 
+use DirectoryTree\Dummy\Data;
 use DirectoryTree\Dummy\Tests\Fixtures\HasFactoryInstanceStub;
 use DirectoryTree\Dummy\Tests\Fixtures\HasFactoryStub;
-use Illuminate\Support\Fluent;
 
-it('can generate fake fluent instance', function () {
+it('can generate fake data instance', function () {
     $instance = HasFactoryStub::factory()->make();
 
-    expect($instance)->toBeInstanceOf(Fluent::class);
-    expect($instance->toArray())->toHaveKeys(['name', 'email']);
+    expect($instance)->toBeInstanceOf(Data::class);
+    expect($instance->all())->toHaveKeys(['name', 'email']);
 });
 
-it('can overwrite fake fluent instance data', function () {
+it('can overwrite fake data instance data', function () {
     $instance = HasFactoryStub::factory()->make([
         'name' => 'John Doe',
     ]);

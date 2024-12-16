@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "37ff7eddddbe6d85526578d91c4975e4",
+    "content-hash": "5a13894d3b2c8d199dec037c1df5cf9f",
     "packages": [],
     "packages-dev": [
         {
@@ -3559,16 +3559,16 @@
         },
         {
             "name": "orchestra/testbench",
-            "version": "v9.7.0",
+            "version": "v9.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/orchestral/testbench.git",
-                "reference": "76b7e27da7a7d88d61087f258f88bc174b2cf7bd"
+                "reference": "88e90042d7428c646ece8acf4a69e7621369f14d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orchestral/testbench/zipball/76b7e27da7a7d88d61087f258f88bc174b2cf7bd",
-                "reference": "76b7e27da7a7d88d61087f258f88bc174b2cf7bd",
+                "url": "https://api.github.com/repos/orchestral/testbench/zipball/88e90042d7428c646ece8acf4a69e7621369f14d",
+                "reference": "88e90042d7428c646ece8acf4a69e7621369f14d",
                 "shasum": ""
             },
             "require": {
@@ -3576,8 +3576,8 @@
                 "fakerphp/faker": "^1.23",
                 "laravel/framework": "^11.35.0",
                 "mockery/mockery": "^1.6.10",
-                "orchestra/testbench-core": "^9.7",
-                "orchestra/workbench": "^9.9",
+                "orchestra/testbench-core": "^9.8",
+                "orchestra/workbench": "^9.11",
                 "php": "^8.2",
                 "phpunit/phpunit": "^10.5.35 || ^11.3.6",
                 "symfony/process": "^7.0.3",
@@ -3608,22 +3608,22 @@
             ],
             "support": {
                 "issues": "https://github.com/orchestral/testbench/issues",
-                "source": "https://github.com/orchestral/testbench/tree/v9.7.0"
+                "source": "https://github.com/orchestral/testbench/tree/v9.8.0"
             },
-            "time": "2024-12-01T11:13:07+00:00"
+            "time": "2024-12-16T00:12:23+00:00"
         },
         {
             "name": "orchestra/testbench-core",
-            "version": "v9.7.2",
+            "version": "v9.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/orchestral/testbench-core.git",
-                "reference": "466a6e4e144e71e15bc67deabc84989dce178485"
+                "reference": "7717d92054493096f14d21fc06ec6c43db7a2f3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/466a6e4e144e71e15bc67deabc84989dce178485",
-                "reference": "466a6e4e144e71e15bc67deabc84989dce178485",
+                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/7717d92054493096f14d21fc06ec6c43db7a2f3a",
+                "reference": "7717d92054493096f14d21fc06ec6c43db7a2f3a",
                 "shasum": ""
             },
             "require": {
@@ -3648,6 +3648,7 @@
                 "mockery/mockery": "^1.6.10",
                 "phpstan/phpstan": "^2.0",
                 "phpunit/phpunit": "^10.5.35 || ^11.3.6",
+                "spatie/laravel-ray": "^1.39",
                 "symfony/process": "^7.0.3",
                 "symfony/yaml": "^7.0.3",
                 "vlucas/phpdotenv": "^5.6.1"
@@ -3702,20 +3703,20 @@
                 "issues": "https://github.com/orchestral/testbench/issues",
                 "source": "https://github.com/orchestral/testbench-core"
             },
-            "time": "2024-12-06T03:34:33+00:00"
+            "time": "2024-12-15T14:14:32+00:00"
         },
         {
             "name": "orchestra/workbench",
-            "version": "v9.10.0",
+            "version": "v9.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/orchestral/workbench.git",
-                "reference": "712fa9ae4bb793fcca80c163dc90e1f619b36ef6"
+                "reference": "1c0f93b0697c82cafea86234a2b09bbb6491abeb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orchestral/workbench/zipball/712fa9ae4bb793fcca80c163dc90e1f619b36ef6",
-                "reference": "712fa9ae4bb793fcca80c163dc90e1f619b36ef6",
+                "url": "https://api.github.com/repos/orchestral/workbench/zipball/1c0f93b0697c82cafea86234a2b09bbb6491abeb",
+                "reference": "1c0f93b0697c82cafea86234a2b09bbb6491abeb",
                 "shasum": ""
             },
             "require": {
@@ -3726,7 +3727,7 @@
                 "laravel/tinker": "^2.9",
                 "nunomaduro/collision": "^8.0",
                 "orchestra/canvas": "^9.1",
-                "orchestra/testbench-core": "^9.7",
+                "orchestra/testbench-core": "^9.8",
                 "php": "^8.2",
                 "symfony/polyfill-php83": "^1.31",
                 "symfony/polyfill-php84": "^1.31",
@@ -3737,7 +3738,8 @@
                 "laravel/pint": "^1.17",
                 "mockery/mockery": "^1.6.10",
                 "phpstan/phpstan": "^2.0",
-                "phpunit/phpunit": "^10.5.35 || ^11.3.6"
+                "phpunit/phpunit": "^10.5.35 || ^11.3.6",
+                "spatie/laravel-ray": "^1.39"
             },
             "suggest": {
                 "ext-pcntl": "Required to use all features of the console signal trapping."
@@ -3767,9 +3769,9 @@
             ],
             "support": {
                 "issues": "https://github.com/orchestral/workbench/issues",
-                "source": "https://github.com/orchestral/workbench/tree/v9.10.0"
+                "source": "https://github.com/orchestral/workbench/tree/v9.11.0"
             },
-            "time": "2024-12-10T11:00:40+00:00"
+            "time": "2024-12-16T01:18:38+00:00"
         },
         {
             "name": "pestphp/pest",

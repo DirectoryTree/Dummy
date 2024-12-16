@@ -2,17 +2,17 @@
 
 namespace DirectoryTree\Dummy\Tests\Fixtures;
 
+use DirectoryTree\Dummy\Data;
 use DirectoryTree\Dummy\HasFactory;
 use Faker\Generator;
-use Illuminate\Support\Fluent;
 
 class HasFactoryStub
 {
     use HasFactory;
 
-    protected static function toFactoryInstance(array $attributes): Fluent
+    protected static function toFactoryInstance(array $attributes): Data
     {
-        return new Fluent($attributes);
+        return new Data($attributes);
     }
 
     protected static function getFactoryDefinition(Generator $faker): array

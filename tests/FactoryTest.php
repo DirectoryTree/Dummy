@@ -1,24 +1,24 @@
 <?php
 
+use DirectoryTree\Dummy\Data;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryClassStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryWithConfigurationStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryWithCustomClassStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryWithStateStub;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Fluent;
 
 it('can generate single instance', function () {
     $instance = FactoryStub::new()->make();
 
-    expect($instance)->toBeInstanceOf(Fluent::class);
+    expect($instance)->toBeInstanceOf(Data::class);
 });
 
 it('can generate multiple instances in a collection', function () {
     $collection = FactoryStub::new()->count(5)->make();
 
     $collection->each(
-        fn ($instance) => expect($instance)->toBeInstanceOf(Fluent::class)
+        fn ($instance) => expect($instance)->toBeInstanceOf(Data::class)
     );
 
     expect($collection)->toHaveCount(5);

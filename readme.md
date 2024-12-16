@@ -128,9 +128,9 @@ class Reservation
     protected static function toFactoryInstance(array $attributes): static
     {
         return new static(
-            $fluent->name,
-            $fluent->email,
-            $fluent->datetime,
+            $attributes['name'],
+            $attributes['email'],
+            $attributes['datetime'],
         );
     }
 }

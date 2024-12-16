@@ -24,6 +24,16 @@ class Data implements ArrayAccess, JsonSerializable
     }
 
     /**
+     * Set an attribute on the data instance using "dot" notation.
+     */
+    public function set(string $key, mixed $value): static
+    {
+        data_set($this->attributes, $key, $value);
+
+        return $this;
+    }
+
+    /**
      * Get an attribute from the data instance using "dot" notation.
      */
     public function get(string $key, mixed $default = null): mixed

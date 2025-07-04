@@ -163,6 +163,25 @@ class Reservation
         public string $status = 'pending',
         public string $type = 'standard',
     ) {}
+    
+     // Dynamic state methods
+    public static function getConfirmedState(): array
+    {
+        return ['status' => 'confirmed'];
+    }
+
+    public static function getPremiumState(): array
+    {
+        return [
+            'type' => 'premium',
+            'status' => 'confirmed',
+        ];
+    }
+
+    public static function getCancelledState(): array
+    {
+        return ['status' => 'cancelled'];
+    }
 
     protected static function toFactoryInstance(array $attributes): self
     {
@@ -182,25 +201,6 @@ class Reservation
             'email' => $faker->email(),
             'datetime' => $faker->dateTime(),
         ];
-    }
-
-    // Dynamic state methods
-    public static function getConfirmedState(): array
-    {
-        return ['status' => 'confirmed'];
-    }
-
-    public static function getPremiumState(): array
-    {
-        return [
-            'type' => 'premium',
-            'status' => 'confirmed',
-        ];
-    }
-
-    public static function getCancelledState(): array
-    {
-        return ['status' => 'cancelled'];
     }
 }
 ```

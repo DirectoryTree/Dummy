@@ -2,6 +2,7 @@
 
 namespace DirectoryTree\Dummy;
 
+use BadMethodCallException;
 use Closure;
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
@@ -23,6 +24,7 @@ class Factory
      */
     public function __construct(
         protected ?int $count = null,
+        protected ?string $class = null,
         protected ?Closure $using = null,
         protected Collection $states = new Collection,
         protected Collection $afterMaking = new Collection,
@@ -267,6 +269,7 @@ class Factory
     {
         return new static(...array_values(array_merge([
             'count' => $this->count,
+            'class' => $this->class,
             'using' => $this->using,
             'states' => $this->states,
             'afterMaking' => $this->afterMaking,
@@ -291,5 +294,35 @@ class Factory
         }
 
         return FakerFactory::create();
+    }
+
+    /**
+     * Handle dynamic state method calls.
+     */
+    public function __call(string $method, array $parameters): static
+    {
+        if (! $this->class) {
+            throw new BadMethodCallException('Cannot call state methods on a factory without a using class.');
+        }
+
+        if (! method_exists($this->class, $stateMethod = $this->getStateMethod($method))) {
+            throw new BadMethodCallException("Method [{$method}] does not exist on [{$this->class}].");
+        }
+
+        if (! is_callable([$this->class, $stateMethod])) {
+            throw new BadMethodCallException("Method [{$method}] is not callable on [{$this->class}].");
+        }
+
+        return $this->state(
+            call_user_func([$this->class, $stateMethod], $parameters)
+        );
+    }
+
+    /**
+     * Get the state method name for the given method name.
+     */
+    protected function getStateMethod(string $method): string
+    {
+        return 'get'.ucfirst($method).'State';
     }
 }

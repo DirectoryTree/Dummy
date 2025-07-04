@@ -25,7 +25,7 @@ trait HasFactory
      */
     protected static function newFactory(array $attributes): Factory
     {
-        return Factory::new($attributes);
+        return (new Factory(class: static::class))->state($attributes);
     }
 
     /**

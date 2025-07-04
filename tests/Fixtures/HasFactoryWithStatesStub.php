@@ -10,21 +10,6 @@ class HasFactoryWithStatesStub
 {
     use HasFactory;
 
-    protected static function toFactoryInstance(array $attributes): Data
-    {
-        return new Data($attributes);
-    }
-
-    protected static function getFactoryDefinition(Generator $faker): array
-    {
-        return [
-            'name' => $faker->name(),
-            'email' => $faker->email(),
-            'role' => 'user',
-            'status' => 'active',
-        ];
-    }
-
     /**
      * Admin state method.
      */
@@ -55,6 +40,21 @@ class HasFactoryWithStatesStub
         return [
             'role' => 'premium',
             'subscription' => 'premium',
+        ];
+    }
+
+    protected static function toFactoryInstance(array $attributes): Data
+    {
+        return new Data($attributes);
+    }
+
+    protected static function getFactoryDefinition(Generator $faker): array
+    {
+        return [
+            'name' => $faker->name(),
+            'email' => $faker->email(),
+            'role' => 'user',
+            'status' => 'active',
         ];
     }
 }

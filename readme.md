@@ -38,7 +38,7 @@ Generate PHP class instances populated with dummy data using <a href="https://gi
 You can install the package via composer:
 
 ```bash
-composer require directorytree/dummy
+composer require directorytree/dummy --dev
 ```
 
 ## Introduction

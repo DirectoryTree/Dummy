@@ -57,5 +57,5 @@ it('can use dynamic state methods with premium state', function () {
 it('throws exception for non-existent state methods', function () {
     expect(function () {
         HasFactoryWithStatesStub::factory()->nonExistentState()->make();
-    })->toThrow(\BadMethodCallException::class);
+    })->toThrow(BadMethodCallException::class);
 });

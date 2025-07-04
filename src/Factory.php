@@ -24,10 +24,10 @@ class Factory
      */
     public function __construct(
         protected ?int $count = null,
+        protected ?string $class = null,
         protected ?Closure $using = null,
         protected Collection $states = new Collection,
         protected Collection $afterMaking = new Collection,
-        protected ?string $class = null,
     ) {
         $this->faker = $this->newFaker();
     }
@@ -269,10 +269,10 @@ class Factory
     {
         return new static(...array_values(array_merge([
             'count' => $this->count,
+            'class' => $this->class,
             'using' => $this->using,
             'states' => $this->states,
             'afterMaking' => $this->afterMaking,
-            'class' => $this->class,
         ], $arguments)));
     }
 

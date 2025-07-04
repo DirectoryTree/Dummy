@@ -85,10 +85,6 @@ The `HasFactory` trait is applied directly to the class you would like to genera
 
 To use the `HasFactory` trait, you must implement the `toFactoryInstance` and `getFactoryDefinition` methods:
 
-> [!note]
-> The `HasFactory` trait supports dynamic state methods. You can define state methods in the format `get{StateName}State` and call them via `Class::factory()->stateName()->make()`.
-> For more complex factory logic or callbacks, you should define a separate `Factory` class instead.
-
 ```php
 namespace App\Data;
 
@@ -143,7 +139,7 @@ $factory = Reservation::factory();
 
 #### Dynamic State Methods
 
-The `HasFactory` trait supports dynamic state methods. You can define state methods in your class using the format `get{StateName}State` and call them dynamically on the factory:
+The `HasFactory` trait supports defining dynamic state methods. You can define state methods in your class using the format `get{StateName}State` and call them dynamically on the factory:
 
 ```php
 namespace App\Data;

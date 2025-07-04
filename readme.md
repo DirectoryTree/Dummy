@@ -86,8 +86,8 @@ The `HasFactory` trait is applied directly to the class you would like to genera
 To use the `HasFactory` trait, you must implement the `toFactoryInstance` and `getFactoryDefinition` methods:
 
 > [!note]
-> The `HasFactory` trait does not provide you the capability of defining state methods or callbacks.
-> If you need this functionality, you should define a separate `Factory` class instead.
+> The `HasFactory` trait supports dynamic state methods. You can define state methods in the format `get{StateName}State` and call them via `Class::factory()->stateName()->make()`.
+> For more complex factory logic or callbacks, you should define a separate `Factory` class instead.
 
 ```php
 namespace App\Data;
@@ -139,6 +139,83 @@ Once implemented, you may call the `Reservation::factory()` method to create a n
 
 ```php
 $factory = Reservation::factory();
+```
+
+#### Dynamic State Methods
+
+The `HasFactory` trait supports dynamic state methods. You can define state methods in your class using the format `get{StateName}State` and call them dynamically on the factory:
+
+```php
+namespace App\Data;
+
+use DateTime;
+use Faker\Generator;
+use DirectoryTree\Dummy\HasFactory;
+
+class Reservation
+{
+    use HasFactory;
+
+    public function __construct(
+        public string $name,
+        public string $email,
+        public DateTime $datetime,
+        public string $status = 'pending',
+        public string $type = 'standard',
+    ) {}
+
+    protected static function toFactoryInstance(array $attributes): self
+    {
+        return new static(
+            $attributes['name'],
+            $attributes['email'],
+            $attributes['datetime'],
+            $attributes['status'] ?? 'pending',
+            $attributes['type'] ?? 'standard',
+        );
+    }
+
+    protected static function getFactoryDefinition(Generator $faker): array
+    {
+        return [
+            'name' => $faker->name(),
+            'email' => $faker->email(),
+            'datetime' => $faker->dateTime(),
+        ];
+    }
+
+    // Dynamic state methods
+    public static function getConfirmedState(): array
+    {
+        return ['status' => 'confirmed'];
+    }
+
+    public static function getPremiumState(): array
+    {
+        return [
+            'type' => 'premium',
+            'status' => 'confirmed',
+        ];
+    }
+
+    public static function getCancelledState(): array
+    {
+        return ['status' => 'cancelled'];
+    }
+}
+```
+
+You can then use these state methods dynamically:
+
+```php
+// Create a confirmed reservation
+$confirmed = Reservation::factory()->confirmed()->make();
+
+// Create a premium reservation
+$premium = Reservation::factory()->premium()->make();
+
+// Chain multiple states
+$premiumCancelled = Reservation::factory()->premium()->cancelled()->make();
 ```
 
 ### Class Factory

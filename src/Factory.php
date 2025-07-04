@@ -272,7 +272,7 @@ class Factory
             'using' => $this->using,
             'states' => $this->states,
             'afterMaking' => $this->afterMaking,
-            'usingClass' => $this->class,
+            'class' => $this->class,
         ], $arguments)));
     }
 

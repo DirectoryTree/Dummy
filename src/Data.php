@@ -28,7 +28,7 @@ class Data implements ArrayAccess, JsonSerializable
      */
     public function set(string $key, mixed $value): static
     {
-        data_set($this->attributes, $key, $value);
+        Arr::set($this->attributes, $key, $value);
 
         return $this;
     }
@@ -38,7 +38,7 @@ class Data implements ArrayAccess, JsonSerializable
      */
     public function get(string $key, mixed $default = null): mixed
     {
-        return data_get($this->attributes, $key, $default);
+        return Arr::get($this->attributes, $key, $default);
     }
 
     /**

@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-Generate PHP class instances populated with dummy data using <a href="https://github.com/FakerPHP/Faker" target="_blank">Faker</a>
+Generate PHP class instances populated with fake dummy data using <a href="https://github.com/FakerPHP/Faker" target="_blank">Faker</a>
 </p>
 
 <p align="center">

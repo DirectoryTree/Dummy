@@ -50,9 +50,6 @@ namespace App\Data;
 
 class Reservation
 {
-    /**
-     * Create a new reservation instance.
-     */
     public function __construct(
         public string $name,
         public string $email,
@@ -97,7 +94,7 @@ class Reservation
     use HasFactory;
     
     /**
-     * Create a new reservation instance.
+     * Constructor.
      */
     public function __construct(
         public string $name,
@@ -160,7 +157,8 @@ class Reservation
         public string $type = 'standard',
     ) {}
     
-     // Dynamic state methods
+     // Dynamic state methods...
+
     public static function getConfirmedState(): array
     {
         return ['status' => 'confirmed'];

@@ -132,7 +132,7 @@ class Factory
         }
 
         if ($this->count === null) {
-            return tap($this->makeInstance(), function ($instance) {
+            return tap($this->makeInstance(), function (mixed $instance) {
                 $this->callAfterMaking($this->collect([$instance]));
             });
         }
@@ -178,7 +178,7 @@ class Factory
         }
 
         return $this->collect(
-            (new Collection($records))->map(function ($record) {
+            (new Collection($records))->map(function (callable|array $record) {
                 return $this->state($record)->make();
             })->all()
         );
@@ -228,9 +228,9 @@ class Factory
      */
     protected function getRawAttributes(): array
     {
-        return $this->states->pipe(function ($states) {
+        return $this->states->pipe(function (Collection $states) {
             return $states;
-        })->reduce(function ($carry, $state) {
+        })->reduce(function (array $carry, callable $state) {
             if ($state instanceof Closure) {
                 $state = $state->bindTo($this);
             }
@@ -247,7 +247,7 @@ class Factory
      */
     protected function expandAttributes(array $definition): array
     {
-        return (new Collection($definition))->map(function ($attribute, $key = null) use (&$definition) {
+        return (new Collection($definition))->map(function (mixed $attribute, string|int|null $key = null) use (&$definition) {
             $attribute = $this->expandAttribute($attribute, $definition);
 
             $definition[$key] = $attribute;
@@ -393,7 +393,7 @@ class Factory
     {
         foreach ($instances as $instance) {
             $this->afterMaking->each(
-                fn ($callback) => $callback($instance)
+                fn (Closure $callback) => $callback($instance)
             );
         }
     }

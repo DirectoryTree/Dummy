@@ -28,6 +28,8 @@ Generate PHP class instances populated with fake dummy data using <a href="https
     - [Factory Callbacks](#factory-callbacks)
     - [Factory Sequences](#factory-sequences)
     - [Factory Collections](#factory-collections)
+    - [Factory Macros](#factory-macros)
+    - [IDE Type Inference](#ide-type-inference)
 
 ## Requirements
 
@@ -89,6 +91,9 @@ use DateTime;
 use Faker\Generator;
 use DirectoryTree\Dummy\HasFactory;
 
+/**
+ * @use HasFactory<Reservation>
+ */
 class Reservation
 {
     use HasFactory;
@@ -105,7 +110,7 @@ class Reservation
     /**
      * Define the factory's default state.
      */
-    protected function getFactoryDefinition(Generator $faker): array
+    protected static function getFactoryDefinition(Generator $faker): array
     {
         return [
             'name' => $faker->name(),
@@ -145,6 +150,9 @@ use DateTime;
 use Faker\Generator;
 use DirectoryTree\Dummy\HasFactory;
 
+/**
+ * @use HasFactory<Reservation>
+ */
 class Reservation
 {
     use HasFactory;
@@ -226,6 +234,9 @@ namespace App\Factories;
 use App\Data\Reservation;
 use DirectoryTree\Dummy\Factory;
 
+/**
+ * @extends Factory<Reservation>
+ */
 class ReservationFactory extends Factory
 {
     /**
@@ -276,10 +287,35 @@ $reservation = Reservation::factory()->make([
 
 To generate multiple instances of the class, you may use the `count` method:
 
-> This will return a `Illuminate\SupportCollection` instance containing the generated classes.
+> This will return an `Illuminate\Support\Collection` instance containing the generated classes.
 
 ```php
 $collection = Reservation::factory()->count(5)->make();
+```
+
+If you have a counted factory but need one instance, use `makeOne`:
+
+```php
+$reservation = Reservation::factory()->count(5)->makeOne();
+```
+
+To make several instances with a different state record for each one, use `makeMany`:
+
+```php
+$collection = Reservation::factory()->makeMany([
+    ['name' => 'Taylor Otwell'],
+    ['name' => 'Nuno Maduro'],
+]);
+```
+
+You may also defer generation by creating a lazy callback:
+
+```php
+$makeReservation = Reservation::factory()->lazy([
+    'name' => 'John Doe',
+]);
+
+$reservation = $makeReservation();
 ```
 
 ### Factory States
@@ -307,6 +343,17 @@ class ReservationFactory extends Factory
 }
 ```
 
+You may prepend a state when you need it evaluated before the factory's existing states:
+
+```php
+$reservation = Reservation::factory()
+    ->tomorrow()
+    ->prependState([
+        'name' => 'Early State',
+    ])
+    ->make();
+```
+
 ### Factory Callbacks
 
 Factory callbacks are registered using the `afterMaking` method and allow you to perform 
@@ -329,6 +376,14 @@ class ReservationFactory extends Factory
         });
     }
 }
+```
+
+You may remove configured `afterMaking` callbacks for a single factory chain with `withoutAfterMaking`:
+
+```php
+$reservation = ReservationFactory::new()
+    ->withoutAfterMaking()
+    ->make();
 ```
 
 ### Factory Sequences
@@ -369,3 +424,51 @@ class ReservationFactory extends Factory
     }
 }
 ```
+
+### Factory Macros
+
+Factories are macroable, allowing you to register reusable factory helpers:
+
+```php
+use DirectoryTree\Dummy\Factory;
+
+Factory::macro('named', function (string $name) {
+    return $this->state([
+        'name' => $name,
+    ]);
+});
+
+$reservation = Reservation::factory()->named('John Doe')->make();
+```
+
+### IDE Type Inference
+
+Dummy includes generic PHPDoc annotations so static analysis tools and IDEs can infer factory return types.
+
+When using the `HasFactory` trait, add an `@use` annotation to your class:
+
+```php
+/**
+ * @use HasFactory<Reservation>
+ */
+class Reservation
+{
+    use HasFactory;
+
+    // ...
+}
+```
+
+When using a dedicated factory class, add an `@extends` annotation:
+
+```php
+/**
+ * @extends Factory<Reservation>
+ */
+class ReservationFactory extends Factory
+{
+    // ...
+}
+```
+
+These annotations allow tools to infer that `Reservation::factory()->makeOne()` and `ReservationFactory::new()->makeOne()` return a `Reservation` instance.

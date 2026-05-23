@@ -83,7 +83,7 @@ class Data implements ArrayAccess, IteratorAggregate, JsonSerializable
     /**
      * Get the attributes from the data instance.
      *
-     * @param  array<int, string>|string|null  $keys
+     * @param  array<int, string>|string|int|null  $keys
      * @return array<TKey, TValue>
      */
     public function all(mixed $keys = null): array

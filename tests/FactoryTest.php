@@ -61,6 +61,16 @@ it('can accept attribute closures', function () {
     expect($instance->foo)->toBe('bar');
 });
 
+it('does not invoke callable values returned by attribute closures', function () {
+    $callback = fn () => 'bar';
+
+    $instance = FactoryStub::new()->make([
+        'foo' => fn () => $callback,
+    ]);
+
+    expect($instance->foo)->toBe($callback);
+});
+
 it('can make raw attributes', function () {
     $raw = FactoryStub::new()->count(5)->raw();
 

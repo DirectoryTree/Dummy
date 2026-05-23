@@ -25,6 +25,7 @@ Generate PHP class instances populated with fake dummy data using <a href="https
     - [Class Factory](#class-factory)
 - [Usage](#usage)
     - [Factory States](#factory-states)
+    - [Eloquent Attributes](#eloquent-attributes)
     - [Factory Callbacks](#factory-callbacks)
     - [Factory Sequences](#factory-sequences)
     - [Factory Collections](#factory-collections)
@@ -352,6 +353,31 @@ $reservation = Reservation::factory()
         'name' => 'Early State',
     ])
     ->make();
+```
+
+### Eloquent Attributes
+
+When Laravel's Eloquent is installed, Dummy will expand Eloquent model instances and factories into model keys:
+
+```php
+use App\Models\Company;
+use App\Models\User;
+
+$reservation = Reservation::factory()->make([
+    'company_id' => Company::factory(),
+    'user_id' => User::factory()->create(),
+]);
+```
+
+This also works for values returned from attribute closures, so dependent attributes can use previously expanded keys:
+
+```php
+$reservation = Reservation::factory()->make([
+    'company_id' => Company::factory(),
+    'user_id' => fn (array $attributes) => User::factory([
+        'company_id' => $attributes['company_id'],
+    ]),
+]);
 ```
 
 ### Factory Callbacks

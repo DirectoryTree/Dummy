@@ -18,11 +18,7 @@ trait HasFactory
     public static function factory(array $attributes = []): Factory
     {
         return static::newFactory($attributes)->using(
-            function (Generator $faker, array $attributes) {
-                return static::toFactoryInstance(
-                    array_merge(static::getFactoryDefinition($faker, $attributes), $attributes)
-                );
-            }
+            fn (Generator $faker, array $attributes) => static::toFactoryInstance($attributes)
         );
     }
 
@@ -34,7 +30,9 @@ trait HasFactory
      */
     protected static function newFactory(array $attributes): Factory
     {
-        return (new Factory(class: static::class))->state($attributes);
+        return (new Factory(class: static::class))->state(function () {
+            return static::getFactoryDefinition($this->faker());
+        })->state($attributes);
     }
 
     /**

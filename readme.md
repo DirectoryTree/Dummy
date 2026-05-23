@@ -19,6 +19,7 @@ Generate PHP class instances populated with fake dummy data using <a href="https
 
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Upgrading](#upgrading)
 - [Introduction](#introduction)
 - [Setup](#setup)
     - [HasFactory Trait](#hasfactory-trait)
@@ -43,6 +44,62 @@ You can install the package via composer:
 ```bash
 composer require directorytree/dummy --dev
 ```
+
+## Upgrading
+
+### From v1 to v2
+
+Dummy v2 changes the `HasFactory` instance transformer to receive a `DirectoryTree\Dummy\Data` object instead of a raw array. This gives you array access plus helper methods for reading generated attributes.
+
+Before:
+
+```php
+protected static function toFactoryInstance(array $attributes): static
+{
+    return new static(
+        $attributes['name'],
+        $attributes['email'],
+    );
+}
+```
+
+After:
+
+```php
+use DirectoryTree\Dummy\Data;
+
+protected static function toFactoryInstance(Data $attributes): static
+{
+    return new static(
+        $attributes['name'],
+        $attributes['email'],
+    );
+}
+```
+
+If your constructor or factory method needs a plain array, call `all()`:
+
+```php
+protected static function toFactoryInstance(Data $attributes): static
+{
+    return new static($attributes->all());
+}
+```
+
+You can also replace manual array access with helper methods where useful:
+
+```php
+$attributes->get('profile.name');
+$attributes->filled('email');
+$attributes->boolean('active');
+$attributes->integer('visits');
+$attributes->enum('status', Status::class);
+$attributes->enums('roles', Role::class);
+$attributes->only(['name', 'email']);
+$attributes->except('password');
+```
+
+State callbacks, attribute closures, `raw()`, and custom `Factory::generate(array $attributes)` methods continue to receive plain arrays.
 
 ## Introduction
 

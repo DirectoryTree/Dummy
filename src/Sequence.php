@@ -18,6 +18,8 @@ class Sequence implements Countable
 
     /**
      * The sequence of return values.
+     *
+     * @var array<int, mixed>
      */
     protected array $sequence;
 

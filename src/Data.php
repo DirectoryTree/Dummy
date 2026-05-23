@@ -6,15 +6,22 @@ use ArrayAccess;
 use Illuminate\Support\Arr;
 use JsonSerializable;
 
+/**
+ * @implements ArrayAccess<string|int, mixed>
+ */
 class Data implements ArrayAccess, JsonSerializable
 {
     /**
      * The data attributes.
+     *
+     * @var array<string|int, mixed>
      */
     protected array $attributes = [];
 
     /**
      * Constructor.
+     *
+     * @param  iterable<string|int, mixed>  $attributes
      */
     public function __construct(iterable $attributes = [])
     {
@@ -66,7 +73,8 @@ class Data implements ArrayAccess, JsonSerializable
     /**
      * Get the attributes from the data instance.
      *
-     * @param  array|mixed|null  $keys
+     * @param  array<int, string>|string|null  $keys
+     * @return array<string|int, mixed>
      */
     public function all(mixed $keys = null): array
     {
@@ -87,6 +95,8 @@ class Data implements ArrayAccess, JsonSerializable
 
     /**
      * Convert the object into something JSON serializable.
+     *
+     * @return array<string|int, mixed>
      */
     public function jsonSerialize(): array
     {
@@ -95,6 +105,8 @@ class Data implements ArrayAccess, JsonSerializable
 
     /**
      * Determine if the given offset exists.
+     *
+     * @param  string|int  $offset
      */
     public function offsetExists(mixed $offset): bool
     {
@@ -103,6 +115,8 @@ class Data implements ArrayAccess, JsonSerializable
 
     /**
      * Get the value for a given offset.
+     *
+     * @param  string|int  $offset
      */
     public function offsetGet(mixed $offset): mixed
     {
@@ -111,6 +125,8 @@ class Data implements ArrayAccess, JsonSerializable
 
     /**
      * Set the value at the given offset.
+     *
+     * @param  string|int|null  $offset
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
@@ -119,6 +135,8 @@ class Data implements ArrayAccess, JsonSerializable
 
     /**
      * Unset the value at the given offset.
+     *
+     * @param  string|int  $offset
      */
     public function offsetUnset(mixed $offset): void
     {
@@ -127,6 +145,8 @@ class Data implements ArrayAccess, JsonSerializable
 
     /**
      * Handle dynamic calls to the data instance to set attributes.
+     *
+     * @param  array<int, mixed>  $parameters
      */
     public function __call(string $method, array $parameters): static
     {

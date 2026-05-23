@@ -8,12 +8,14 @@ class CrossJoinSequence extends Sequence
 {
     /**
      * Constructor.
+     *
+     * @param  array<int, array<string, mixed>>  ...$sequences
      */
     public function __construct(mixed ...$sequences)
     {
         $crossJoined = array_map(
-            function ($a) {
-                return array_merge(...$a);
+            function (array $attributes) {
+                return array_merge(...$attributes);
             },
             Arr::crossJoin(...$sequences),
         );

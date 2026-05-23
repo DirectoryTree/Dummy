@@ -18,7 +18,7 @@ trait HasFactory
     public static function factory(array $attributes = []): Factory
     {
         return static::newFactory($attributes)->using(
-            fn (Generator $faker, array $attributes) => static::toFactoryInstance($attributes)
+            fn (Generator $faker, array $attributes) => static::toFactoryInstance(new Data($attributes))
         );
     }
 
@@ -40,10 +40,10 @@ trait HasFactory
     /**
      * Transform the dummy data into a class instance.
      *
-     * @param  array<string, mixed>  $attributes
+     * @param  Data<string, mixed>  $attributes
      * @return TFactoryInstance
      */
-    abstract protected static function toFactoryInstance(array $attributes): mixed;
+    abstract protected static function toFactoryInstance(Data $attributes): mixed;
 
     /**
      * Define the dummy data definition.

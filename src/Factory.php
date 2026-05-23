@@ -7,6 +7,8 @@ use Closure;
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
 use Illuminate\Container\Container;
+use Illuminate\Database\Eloquent\Factories\Factory as EloquentFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Conditionable;
 use Illuminate\Support\Traits\Macroable;
@@ -245,15 +247,47 @@ class Factory
      */
     protected function expandAttributes(array $definition): array
     {
-        return (new Collection($definition))->map(function ($attribute, $key) use (&$definition) {
-            if (is_callable($attribute) && ! is_string($attribute) && ! is_array($attribute)) {
-                $attribute = $attribute($definition);
-            }
+        return (new Collection($definition))->map(function ($attribute, $key = null) use (&$definition) {
+            $attribute = $this->expandAttribute($attribute, $definition);
 
             $definition[$key] = $attribute;
 
             return $attribute;
         })->all();
+    }
+
+    /**
+     * Expand the given attribute to its underlying value.
+     *
+     * @param  array<string, mixed>  $definition
+     */
+    protected function expandAttribute(mixed $attribute, array $definition): mixed
+    {
+        $attribute = $this->expandAttributeValue($attribute);
+
+        // Callables can be strings or array definitions, so we will only call
+        // those attributes that are intended to be evaluated by the factory.
+        if (is_callable($attribute) && ! is_string($attribute) && ! is_array($attribute)) {
+            $attribute = $attribute($definition);
+        }
+
+        return $this->expandAttributeValue($attribute);
+    }
+
+    /**
+     * Expand non-callable attribute values to their underlying value.
+     */
+    protected function expandAttributeValue(mixed $attribute): mixed
+    {
+        if ($attribute instanceof EloquentFactory) {
+            return $attribute->create()->getKey();
+        }
+
+        if ($attribute instanceof Model) {
+            return $attribute->getKey();
+        }
+
+        return $attribute;
     }
 
     /**

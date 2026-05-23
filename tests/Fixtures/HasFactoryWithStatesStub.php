@@ -43,9 +43,9 @@ class HasFactoryWithStatesStub
         ];
     }
 
-    protected static function toFactoryInstance(array $attributes): Data
+    protected static function toFactoryInstance(Data $attributes): Data
     {
-        return new Data($attributes);
+        return $attributes;
     }
 
     protected static function getFactoryDefinition(Generator $faker): array

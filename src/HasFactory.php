@@ -30,8 +30,10 @@ trait HasFactory
      */
     protected static function newFactory(array $attributes): Factory
     {
-        return (new Factory(class: static::class))->state(function () {
-            return static::getFactoryDefinition($this->faker());
+        $class = static::class;
+
+        return (new Factory(class: static::class))->state(function () use ($class) {
+            return $class::getFactoryDefinition($this->faker());
         })->state($attributes);
     }
 

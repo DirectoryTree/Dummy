@@ -312,7 +312,9 @@ class Data implements ArrayAccess, IteratorAggregate, JsonSerializable
     {
         $value = $this->get($key);
 
-        return ! is_bool($value) && ! is_array($value) && trim((string) $value) === '';
+        return ! is_bool($value)
+            && ! is_array($value)
+            && trim((string) $value) === '';
     }
 
     /**

@@ -90,6 +90,7 @@ namespace App\Data;
 
 use DateTime;
 use Faker\Generator;
+use DirectoryTree\Dummy\Data;
 use DirectoryTree\Dummy\HasFactory;
 
 /**
@@ -123,7 +124,7 @@ class Reservation
     /**
      * Create a new instance of the class using the factory definition.
      */
-    protected static function toFactoryInstance(array $attributes): static
+    protected static function toFactoryInstance(Data $attributes): static
     {
         return new static(
             $attributes['name'],
@@ -133,6 +134,8 @@ class Reservation
     }
 }
 ```
+
+The `$attributes` argument passed into `toFactoryInstance` is a `DirectoryTree\Dummy\Data` instance. It supports array access and common data helpers, such as `get`, `has`, `filled`, `notFilled`, `boolean`, `integer`, `enum`, `enums`, `only`, `except`, `collect`, and `all`.
 
 Once implemented, you may call the `Reservation::factory()` method to create a new dummy factory:
 
@@ -149,6 +152,7 @@ namespace App\Data;
 
 use DateTime;
 use Faker\Generator;
+use DirectoryTree\Dummy\Data;
 use DirectoryTree\Dummy\HasFactory;
 
 /**
@@ -186,7 +190,7 @@ class Reservation
         return ['status' => 'cancelled'];
     }
 
-    protected static function toFactoryInstance(array $attributes): self
+    protected static function toFactoryInstance(Data $attributes): self
     {
         return new static(
             $attributes['name'],

@@ -3,25 +3,35 @@
 namespace DirectoryTree\Dummy;
 
 use ArrayAccess;
+use ArrayIterator;
+use BackedEnum;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use IteratorAggregate;
 use JsonSerializable;
+use stdClass;
+use Traversable;
 
 /**
- * @implements ArrayAccess<string|int, mixed>
+ * @template TKey of array-key
+ * @template TValue
+ *
+ * @implements ArrayAccess<TKey, TValue>
+ * @implements IteratorAggregate<TKey, TValue>
  */
-class Data implements ArrayAccess, JsonSerializable
+class Data implements ArrayAccess, IteratorAggregate, JsonSerializable
 {
     /**
      * The data attributes.
      *
-     * @var array<string|int, mixed>
+     * @var array<TKey, TValue>
      */
     protected array $attributes = [];
 
     /**
      * Constructor.
      *
-     * @param  iterable<string|int, mixed>  $attributes
+     * @param  iterable<TKey, TValue>  $attributes
      */
     public function __construct(iterable $attributes = [])
     {
@@ -33,7 +43,7 @@ class Data implements ArrayAccess, JsonSerializable
     /**
      * Set an attribute on the data instance using "dot" notation.
      */
-    public function set(string $key, mixed $value): static
+    public function set(string|int $key, mixed $value): static
     {
         Arr::set($this->attributes, $key, $value);
 
@@ -43,7 +53,7 @@ class Data implements ArrayAccess, JsonSerializable
     /**
      * Get an attribute from the data instance using "dot" notation.
      */
-    public function get(string $key, mixed $default = null): mixed
+    public function get(string|int $key, mixed $default = null): mixed
     {
         return Arr::get($this->attributes, $key, $default);
     }
@@ -51,7 +61,7 @@ class Data implements ArrayAccess, JsonSerializable
     /**
      * Get an attribute from the data instance.
      */
-    public function value(string $key, mixed $default = null): mixed
+    public function value(string|int $key, mixed $default = null): mixed
     {
         if (array_key_exists($key, $this->attributes)) {
             return $this->attributes[$key];
@@ -74,7 +84,7 @@ class Data implements ArrayAccess, JsonSerializable
      * Get the attributes from the data instance.
      *
      * @param  array<int, string>|string|null  $keys
-     * @return array<string|int, mixed>
+     * @return array<TKey, TValue>
      */
     public function all(mixed $keys = null): array
     {
@@ -94,13 +104,271 @@ class Data implements ArrayAccess, JsonSerializable
     }
 
     /**
+     * Determine if the data contains a given key.
+     */
+    public function exists(string|int|array $key, string|int ...$keys): bool
+    {
+        return $this->has($key, ...$keys);
+    }
+
+    /**
+     * Determine if the data contains a given key.
+     */
+    public function has(string|int|array $key, string|int ...$keys): bool
+    {
+        $keys = is_array($key) ? $key : [$key, ...$keys];
+
+        foreach ($keys as $value) {
+            if (! Arr::has($this->attributes, (string) $value)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Determine if the data contains any of the given keys.
+     */
+    public function hasAny(string|int|array $key, string|int ...$keys): bool
+    {
+        return Arr::hasAny(
+            $this->attributes,
+            array_map('strval', is_array($key) ? $key : [$key, ...$keys])
+        );
+    }
+
+    /**
+     * Determine if the data is missing a given key.
+     */
+    public function missing(string|int|array $key, string|int ...$keys): bool
+    {
+        return ! $this->has($key, ...$keys);
+    }
+
+    /**
+     * Determine if the data contains a non-empty value for the given key.
+     */
+    public function filled(string|int|array $key, string|int ...$keys): bool
+    {
+        $keys = is_array($key) ? $key : [$key, ...$keys];
+
+        foreach ($keys as $value) {
+            if ($this->isEmptyString($value)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Determine if the data contains an empty value for the given key.
+     */
+    public function isNotFilled(string|int|array $key, string|int ...$keys): bool
+    {
+        return ! $this->filled($key, ...$keys);
+    }
+
+    /**
+     * Determine if the data contains an empty value for the given key.
+     */
+    public function notFilled(string|int|array $key, string|int ...$keys): bool
+    {
+        return $this->isNotFilled($key, ...$keys);
+    }
+
+    /**
+     * Determine if the data contains a non-empty value for any of the given keys.
+     */
+    public function anyFilled(string|int|array $key, string|int ...$keys): bool
+    {
+        $keys = is_array($key) ? $key : [$key, ...$keys];
+
+        foreach ($keys as $value) {
+            if ($this->filled($value)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Retrieve data from the instance as a boolean.
+     */
+    public function boolean(string|int $key, bool $default = false): bool
+    {
+        return filter_var($this->get($key, $default), FILTER_VALIDATE_BOOLEAN);
+    }
+
+    /**
+     * Retrieve data from the instance as an integer.
+     */
+    public function integer(string|int $key, int $default = 0): int
+    {
+        return (int) $this->get($key, $default);
+    }
+
+    /**
+     * Retrieve data from the instance as a float.
+     */
+    public function float(string|int $key, float $default = 0.0): float
+    {
+        return (float) $this->get($key, $default);
+    }
+
+    /**
+     * Retrieve data from the instance as an array.
+     */
+    public function array(array|string|int $key): array
+    {
+        return (array) (is_array($key) ? $this->only($key) : $this->get($key));
+    }
+
+    /**
+     * Retrieve data from the instance as a collection.
+     */
+    public function collect(array|string|int $key): Collection
+    {
+        return new Collection(is_array($key) ? $this->only($key) : $this->get($key));
+    }
+
+    /**
+     * Retrieve data from the instance as an enum.
+     *
+     * @template TEnum of BackedEnum
+     * @template TDefault of TEnum|null
+     *
+     * @param  class-string<TEnum>  $enumClass
+     * @param  TDefault  $default
+     * @return TEnum|TDefault
+     */
+    public function enum(string|int $key, string $enumClass, mixed $default = null): mixed
+    {
+        if ($this->isNotFilled($key) || ! $this->isBackedEnum($enumClass)) {
+            return value($default);
+        }
+
+        return $enumClass::tryFrom($this->get($key)) ?: value($default);
+    }
+
+    /**
+     * Retrieve data from the instance as an array of enums.
+     *
+     * @template TEnum of BackedEnum
+     *
+     * @param  class-string<TEnum>  $enumClass
+     * @return array<int, TEnum>
+     */
+    public function enums(string|int $key, string $enumClass): array
+    {
+        if ($this->isNotFilled($key) || ! $this->isBackedEnum($enumClass)) {
+            return [];
+        }
+
+        return $this->collect($key)
+            ->map(fn (mixed $value) => $enumClass::tryFrom($value))
+            ->filter()
+            ->all();
+    }
+
+    /**
+     * Get a subset containing the provided keys with values from the data.
+     */
+    public function only(mixed $keys): array
+    {
+        $results = [];
+
+        $placeholder = new stdClass;
+
+        foreach (is_array($keys) ? $keys : func_get_args() as $key) {
+            $value = Arr::get($this->attributes, $key, $placeholder);
+
+            if ($value !== $placeholder) {
+                Arr::set($results, $key, $value);
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get all of the data except for a specified array of items.
+     */
+    public function except(mixed $keys): array
+    {
+        $results = $this->attributes;
+
+        Arr::forget($results, is_array($keys) ? $keys : func_get_args());
+
+        return $results;
+    }
+
+    /**
+     * Determine if the given key is an empty string for "filled".
+     */
+    protected function isEmptyString(string|int $key): bool
+    {
+        $value = $this->get($key);
+
+        return ! is_bool($value) && ! is_array($value) && trim((string) $value) === '';
+    }
+
+    /**
+     * Determine if the given enum class is backed.
+     *
+     * @param  class-string  $enumClass
+     */
+    protected function isBackedEnum(string $enumClass): bool
+    {
+        return is_a($enumClass, BackedEnum::class, true);
+    }
+
+    /**
+     * Get the attributes from the data instance.
+     *
+     * @return array<TKey, TValue>
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * Convert the data instance to an array.
+     *
+     * @return array<TKey, TValue>
+     */
+    public function toArray(): array
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * Convert the data instance to JSON.
+     */
+    public function toJson($options = 0): string
+    {
+        return (string) json_encode($this->jsonSerialize(), $options);
+    }
+
+    /**
      * Convert the object into something JSON serializable.
      *
-     * @return array<string|int, mixed>
+     * @return array<TKey, TValue>
      */
     public function jsonSerialize(): array
     {
         return $this->attributes;
+    }
+
+    /**
+     * Get an iterator for the attributes.
+     */
+    public function getIterator(): Traversable
+    {
+        return new ArrayIterator($this->attributes);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace DirectoryTree\Dummy\Tests\Fixtures;
 
+use DirectoryTree\Dummy\Data;
 use DirectoryTree\Dummy\HasFactory;
 use Faker\Generator;
 
@@ -13,9 +14,9 @@ class HasFactoryInstanceStub
         public readonly array $attributes
     ) {}
 
-    protected static function toFactoryInstance(array $attributes): self
+    protected static function toFactoryInstance(Data $attributes): self
     {
-        return new static($attributes);
+        return new static($attributes->all());
     }
 
     protected static function getFactoryDefinition(Generator $faker): array

@@ -1,6 +1,7 @@
 <?php
 
 use DirectoryTree\Dummy\Data;
+use DirectoryTree\Dummy\Tests\Fixtures\DataStatus;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryClassStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryWithConfigurationStub;
@@ -32,6 +33,60 @@ it('can accept attributes', function () {
 
     expect($instance->id)->toBe(1);
     expect($instance->name)->toBe('foo');
+});
+
+it('can interact with data attributes', function () {
+    $data = new Data([
+        0 => 'first',
+        1 => '',
+        'active' => 'true',
+        'visits' => '5',
+        'profile' => [
+            'name' => 'Taylor',
+        ],
+    ]);
+
+    expect($data['active'])->toBe('true');
+    expect($data->exists(0))->toBeTrue();
+    expect($data->has(0, 'profile.name'))->toBeTrue();
+    expect($data->hasAny(['deleted_at', 0]))->toBeTrue();
+    expect($data->has('profile.name'))->toBeTrue();
+    expect($data->missing(2))->toBeTrue();
+    expect($data->missing('deleted_at'))->toBeTrue();
+    expect($data->filled(0))->toBeTrue();
+    expect($data->filled('profile.name'))->toBeTrue();
+    expect($data->notFilled(1))->toBeTrue();
+    expect($data->notFilled('deleted_at'))->toBeTrue();
+    expect($data->anyFilled(2, 0))->toBeTrue();
+    expect($data->anyFilled(['deleted_at', 'profile.name']))->toBeTrue();
+    expect($data->boolean('active'))->toBeTrue();
+    expect($data->integer('visits'))->toBe(5);
+    expect($data->get('profile.name'))->toBe('Taylor');
+    expect($data->only('profile.name'))->toBe(['profile' => ['name' => 'Taylor']]);
+    expect($data->except('visits'))->not->toHaveKey('visits');
+    expect($data->collect(['active', 'visits']))->all()->toBe([
+        'active' => 'true',
+        'visits' => '5',
+    ]);
+});
+
+it('can retrieve data as enums', function () {
+    $data = new Data([
+        'status' => 'active',
+        'statuses' => ['active', 'inactive', 'missing'],
+        'missing_status' => null,
+    ]);
+
+    expect($data->enum('status', DataStatus::class))->toBe(DataStatus::Active);
+    expect($data->enum('missing_status', DataStatus::class, DataStatus::Inactive))->toBe(DataStatus::Inactive);
+    expect($data->enum('missing_status', DataStatus::class, fn () => DataStatus::Inactive))->toBe(DataStatus::Inactive);
+    expect($data->enum('status', stdClass::class, DataStatus::Inactive))->toBe(DataStatus::Inactive);
+    expect($data->enums('statuses', DataStatus::class))->toBe([
+        DataStatus::Active,
+        DataStatus::Inactive,
+    ]);
+    expect($data->enums('missing_status', DataStatus::class))->toBe([]);
+    expect($data->enums('statuses', stdClass::class))->toBe([]);
 });
 
 it('can accept invokable attribute callbacks', function () {

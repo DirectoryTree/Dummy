@@ -20,6 +20,17 @@ it('can overwrite fake data instance data', function () {
     expect($instance->name)->toBe('John Doe');
 });
 
+it('passes data into the factory instance transformer', function () {
+    $instance = HasFactoryInstanceStub::factory([
+        'active' => 'true',
+        'visits' => '5',
+    ])->make();
+
+    expect($instance->attributes)->toHaveKeys(['name', 'email', 'active', 'visits']);
+    expect($instance->attributes['active'])->toBe('true');
+    expect($instance->attributes['visits'])->toBe('5');
+});
+
 it('can generate fake instance of self', function () {
     $instance = HasFactoryInstanceStub::factory()->make();
 

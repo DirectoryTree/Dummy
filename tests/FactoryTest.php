@@ -1,6 +1,6 @@
 <?php
 
-use DirectoryTree\Dummy\Data;
+use DirectoryTree\Dummy\DummyData;
 use DirectoryTree\Dummy\Tests\Fixtures\DataStatus;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryClassStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryStub;
@@ -12,14 +12,14 @@ use Illuminate\Support\Collection;
 it('can generate single instance', function () {
     $instance = FactoryStub::new()->make();
 
-    expect($instance)->toBeInstanceOf(Data::class);
+    expect($instance)->toBeInstanceOf(DummyData::class);
 });
 
 it('can generate multiple instances in a collection', function () {
     $collection = FactoryStub::new()->count(5)->make();
 
     $collection->each(
-        fn ($instance) => expect($instance)->toBeInstanceOf(Data::class)
+        fn ($instance) => expect($instance)->toBeInstanceOf(DummyData::class)
     );
 
     expect($collection)->toHaveCount(5);
@@ -36,7 +36,7 @@ it('can accept attributes', function () {
 });
 
 it('can interact with data attributes', function () {
-    $data = new Data([
+    $data = new DummyData([
         0 => 'first',
         1 => '',
         'active' => 'true',
@@ -71,7 +71,7 @@ it('can interact with data attributes', function () {
 });
 
 it('can retrieve data as enums', function () {
-    $data = new Data([
+    $data = new DummyData([
         'status' => 'active',
         'statuses' => ['active', 'inactive', 'missing'],
         'missing_status' => null,
@@ -144,7 +144,7 @@ it('can make many raw attributes', function () {
 it('can make a single instance after a count has been set', function () {
     $instance = FactoryStub::new()->count(5)->makeOne();
 
-    expect($instance)->toBeInstanceOf(Data::class);
+    expect($instance)->toBeInstanceOf(DummyData::class);
 });
 
 it('can make many instances from a number', function () {

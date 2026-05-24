@@ -2,7 +2,7 @@
 
 namespace DirectoryTree\Dummy\Tests\Fixtures;
 
-use DirectoryTree\Dummy\Data;
+use DirectoryTree\Dummy\DummyData;
 use DirectoryTree\Dummy\Factory;
 
 class FactoryWithConfigurationStub extends Factory
@@ -17,7 +17,7 @@ class FactoryWithConfigurationStub extends Factory
 
     protected function configure(): static
     {
-        return $this->afterMaking(function (Data $data) {
+        return $this->afterMaking(function (DummyData $data) {
             $data->name = 'Custom';
         });
     }

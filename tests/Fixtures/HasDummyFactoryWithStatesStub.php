@@ -2,13 +2,13 @@
 
 namespace DirectoryTree\Dummy\Tests\Fixtures;
 
-use DirectoryTree\Dummy\Data;
-use DirectoryTree\Dummy\HasFactory;
+use DirectoryTree\Dummy\DummyData;
+use DirectoryTree\Dummy\HasDummyFactory;
 use Faker\Generator;
 
-class HasFactoryWithStatesStub
+class HasDummyFactoryWithStatesStub
 {
-    use HasFactory;
+    use HasDummyFactory;
 
     /**
      * Admin state method.
@@ -43,12 +43,12 @@ class HasFactoryWithStatesStub
         ];
     }
 
-    protected static function toFactoryInstance(Data $attributes): Data
+    protected static function toDummyInstance(DummyData $attributes): DummyData
     {
         return $attributes;
     }
 
-    protected static function getFactoryDefinition(Generator $faker): array
+    protected static function getDummyDefinition(Generator $faker): array
     {
         return [
             'name' => $faker->name(),

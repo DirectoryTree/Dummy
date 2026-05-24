@@ -7,7 +7,7 @@ use Faker\Generator;
 /**
  * @template TFactoryInstance of object
  */
-trait HasFactory
+trait HasDummyFactory
 {
     /**
      * Create a new dummy factory.
@@ -15,40 +15,40 @@ trait HasFactory
      * @param  array<string, mixed>  $attributes
      * @return Factory<TFactoryInstance>
      */
-    public static function factory(array $attributes = []): Factory
+    public static function dummy(array $attributes = []): Factory
     {
-        return static::newFactory($attributes)->using(
-            fn (Generator $faker, array $attributes) => static::toFactoryInstance(new Data($attributes))
+        return static::newDummyFactory($attributes)->using(
+            fn (Generator $faker, array $attributes) => static::toDummyInstance(new DummyData($attributes))
         );
     }
 
     /**
-     * Get a new factory instance.
+     * Get a new dummy factory instance.
      *
      * @param  array<string, mixed>  $attributes
      * @return Factory<TFactoryInstance>
      */
-    protected static function newFactory(array $attributes): Factory
+    protected static function newDummyFactory(array $attributes): Factory
     {
         $class = static::class;
 
         return (new Factory(class: static::class))->state(function () use ($class) {
-            return $class::getFactoryDefinition($this->faker());
+            return $class::getDummyDefinition($this->faker());
         })->state($attributes);
     }
 
     /**
      * Transform the dummy data into a class instance.
      *
-     * @param  Data<string, mixed>  $attributes
+     * @param  DummyData<string, mixed>  $attributes
      * @return TFactoryInstance
      */
-    abstract protected static function toFactoryInstance(Data $attributes): mixed;
+    abstract protected static function toDummyInstance(DummyData $attributes): mixed;
 
     /**
      * Define the dummy data definition.
      *
      * @return array<string, mixed>
      */
-    abstract protected static function getFactoryDefinition(Generator $faker): array;
+    abstract protected static function getDummyDefinition(Generator $faker): array;
 }

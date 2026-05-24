@@ -19,7 +19,7 @@ use Traversable;
  * @implements ArrayAccess<TKey, TValue>
  * @implements IteratorAggregate<TKey, TValue>
  */
-class Data implements ArrayAccess, IteratorAggregate, JsonSerializable
+class DummyData implements ArrayAccess, IteratorAggregate, JsonSerializable
 {
     /**
      * The data attributes.

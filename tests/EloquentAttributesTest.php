@@ -3,7 +3,7 @@
 use DirectoryTree\Dummy\Tests\Fixtures\EloquentFactoryStub;
 use DirectoryTree\Dummy\Tests\Fixtures\EloquentModelStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryStub;
-use DirectoryTree\Dummy\Tests\Fixtures\HasFactoryWithEloquentAttributesStub;
+use DirectoryTree\Dummy\Tests\Fixtures\HasDummyFactoryWithEloquentAttributesStub;
 
 it('expands eloquent factories and models in factory attributes', function () {
     $instance = FactoryStub::new()->make([
@@ -28,7 +28,7 @@ it('expands eloquent factories and models when making raw attributes', function 
 });
 
 it('expands eloquent factories and models in has factory definitions', function () {
-    $instance = HasFactoryWithEloquentAttributesStub::factory()->make();
+    $instance = HasDummyFactoryWithEloquentAttributesStub::dummy()->make();
 
     expect($instance->model_id)->toBe(123);
     expect($instance->factory_id)->toBe(456);
@@ -36,7 +36,7 @@ it('expands eloquent factories and models in has factory definitions', function 
 });
 
 it('expands eloquent attributes after state overrides are applied', function () {
-    $instance = HasFactoryWithEloquentAttributesStub::factory([
+    $instance = HasDummyFactoryWithEloquentAttributesStub::dummy([
         'factory_id' => new EloquentFactoryStub(789),
     ])->make();
 
@@ -45,7 +45,7 @@ it('expands eloquent attributes after state overrides are applied', function () 
 });
 
 it('expands has factory attributes with factory definition context', function () {
-    $instance = HasFactoryWithEloquentAttributesStub::factory([
+    $instance = HasDummyFactoryWithEloquentAttributesStub::dummy([
         'dependent_id' => fn (array $attributes) => new EloquentModelStub($attributes['factory_id'] + 2),
     ])->make();
 

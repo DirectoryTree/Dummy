@@ -80,7 +80,7 @@ class Factory
      */
     protected function generate(array $attributes): mixed
     {
-        return new Data($attributes);
+        return new DummyData($attributes);
     }
 
     /**

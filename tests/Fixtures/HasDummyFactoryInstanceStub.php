@@ -2,24 +2,24 @@
 
 namespace DirectoryTree\Dummy\Tests\Fixtures;
 
-use DirectoryTree\Dummy\Data;
-use DirectoryTree\Dummy\HasFactory;
+use DirectoryTree\Dummy\DummyData;
+use DirectoryTree\Dummy\HasDummyFactory;
 use Faker\Generator;
 
-class HasFactoryInstanceStub
+class HasDummyFactoryInstanceStub
 {
-    use HasFactory;
+    use HasDummyFactory;
 
     public function __construct(
         public readonly array $attributes
     ) {}
 
-    protected static function toFactoryInstance(Data $attributes): self
+    protected static function toDummyInstance(DummyData $attributes): self
     {
         return new static($attributes->all());
     }
 
-    protected static function getFactoryDefinition(Generator $faker): array
+    protected static function getDummyDefinition(Generator $faker): array
     {
         return [
             'name' => $faker->name(),

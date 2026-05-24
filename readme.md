@@ -22,16 +22,16 @@ Generate PHP class instances populated with fake dummy data using <a href="https
 - [Upgrading](#upgrading)
 - [Introduction](#introduction)
 - [Setup](#setup)
-    - [HasFactory Trait](#hasfactory-trait)
-    - [Class Factory](#class-factory)
+  - [HasDummyFactory Trait](#hasdummyfactory-trait)
+  - [Class Factory](#class-factory)
 - [Usage](#usage)
-    - [Factory States](#factory-states)
-    - [Eloquent Attributes](#eloquent-attributes)
-    - [Factory Callbacks](#factory-callbacks)
-    - [Factory Sequences](#factory-sequences)
-    - [Factory Collections](#factory-collections)
-    - [Factory Macros](#factory-macros)
-    - [IDE Type Inference](#ide-type-inference)
+  - [Factory States](#factory-states)
+  - [Eloquent Attributes](#eloquent-attributes)
+  - [Factory Callbacks](#factory-callbacks)
+  - [Factory Sequences](#factory-sequences)
+  - [Factory Collections](#factory-collections)
+  - [Factory Macros](#factory-macros)
+  - [IDE Type Inference](#ide-type-inference)
 
 ## Requirements
 
@@ -49,38 +49,62 @@ composer require directorytree/dummy --dev
 
 ### From v1 to v2
 
-Dummy v2 changes the `HasFactory` instance transformer to receive a `DirectoryTree\Dummy\Data` object instead of a raw array. This gives you array access plus helper methods for reading generated attributes.
+Dummy v2 renames the trait API so it is explicitly Dummy-owned and does not reserve the common `factory()` method name on your classes.
+
+1. Replace `DirectoryTree\Dummy\HasFactory` with `DirectoryTree\Dummy\HasDummyFactory`.
+2. Replace `use HasFactory;` with `use HasDummyFactory;`.
+3. Replace `YourClass::factory()` calls with `YourClass::dummy()`.
+4. Rename `toFactoryInstance` to `toDummyInstance`.
+5. Rename `getFactoryDefinition` to `getDummyDefinition`.
+6. Change the `toDummyInstance` argument from `array` to `DirectoryTree\Dummy\DummyData`.
 
 Before:
 
 ```php
-protected static function toFactoryInstance(array $attributes): static
+use DirectoryTree\Dummy\HasFactory;
+
+class Reservation
 {
-    return new static(
-        $attributes['name'],
-        $attributes['email'],
-    );
+    use HasFactory;
+
+    protected static function toFactoryInstance(array $attributes): static
+    {
+        return new static(
+            $attributes['name'],
+            $attributes['email'],
+        );
+    }
 }
+
+$reservation = Reservation::factory()->make();
 ```
 
 After:
 
 ```php
-use DirectoryTree\Dummy\Data;
+use DirectoryTree\Dummy\DummyData;
+use DirectoryTree\Dummy\HasDummyFactory;
 
-protected static function toFactoryInstance(Data $attributes): static
+class Reservation
 {
-    return new static(
-        $attributes['name'],
-        $attributes['email'],
-    );
+    use HasDummyFactory;
+
+    protected static function toDummyInstance(DummyData $attributes): static
+    {
+        return new static(
+            $attributes['name'],
+            $attributes['email'],
+        );
+    }
 }
+
+$reservation = Reservation::dummy()->make();
 ```
 
 If your constructor or factory method needs a plain array, call `all()`:
 
 ```php
-protected static function toFactoryInstance(Data $attributes): static
+protected static function toDummyInstance(DummyData $attributes): static
 {
     return new static($attributes->all());
 }
@@ -126,36 +150,36 @@ Dummy provides you with a simple way to generate dummy instances of your classes
 
 ```php
 // Generate one instance:
-$reservation = Reservation::factory()->make();
+$reservation = Reservation::dummy()->make();
 
 // Generate multiple instances:
-$collection = Reservation::factory()->count(5)->make();
+$collection = Reservation::dummy()->count(5)->make();
 ```
 
 ## Setup
 
 Dummy provides you two different ways to generate classes with dummy data.
 
-### HasFactory Trait
+### HasDummyFactory Trait
 
-The `HasFactory` trait is applied directly to the class you would like to generate dummy instances of.
+The `HasDummyFactory` trait is applied directly to the class you would like to generate dummy instances of.
 
-To use the `HasFactory` trait, you must implement the `toFactoryInstance` and `getFactoryDefinition` methods:
+To use the `HasDummyFactory` trait, you must implement the `toDummyInstance` and `getDummyDefinition` methods:
 
 ```php
 namespace App\Data;
 
 use DateTime;
 use Faker\Generator;
-use DirectoryTree\Dummy\Data;
-use DirectoryTree\Dummy\HasFactory;
+use DirectoryTree\Dummy\DummyData;
+use DirectoryTree\Dummy\HasDummyFactory;
 
 /**
- * @use HasFactory<Reservation>
+ * @use HasDummyFactory<Reservation>
  */
 class Reservation
 {
-    use HasFactory;
+    use HasDummyFactory;
     
     /**
      * Constructor.
@@ -169,7 +193,7 @@ class Reservation
     /**
      * Define the factory's default state.
      */
-    protected static function getFactoryDefinition(Generator $faker): array
+    protected static function getDummyDefinition(Generator $faker): array
     {
         return [
             'name' => $faker->name(),
@@ -181,7 +205,7 @@ class Reservation
     /**
      * Create a new instance of the class using the factory definition.
      */
-    protected static function toFactoryInstance(Data $attributes): static
+    protected static function toDummyInstance(DummyData $attributes): static
     {
         return new static(
             $attributes['name'],
@@ -192,32 +216,32 @@ class Reservation
 }
 ```
 
-The `$attributes` argument passed into `toFactoryInstance` is a `DirectoryTree\Dummy\Data` instance. It supports array access and common data helpers, such as `get`, `has`, `filled`, `notFilled`, `boolean`, `integer`, `enum`, `enums`, `only`, `except`, `collect`, and `all`.
+The `$attributes` argument passed into `toDummyInstance` is a `DirectoryTree\Dummy\DummyData` instance. It supports array access and common data helpers, such as `get`, `has`, `filled`, `notFilled`, `boolean`, `integer`, `enum`, `enums`, `only`, `except`, `collect`, and `all`.
 
-Once implemented, you may call the `Reservation::factory()` method to create a new dummy factory:
+Once implemented, you may call the `Reservation::dummy()` method to create a new dummy factory:
 
 ```php
-$factory = Reservation::factory();
+$factory = Reservation::dummy();
 ```
 
 #### Dynamic State Methods
 
-The `HasFactory` trait supports defining dynamic state methods. You can define state methods in your class using the format `get{StateName}State` and call them dynamically on the factory:
+The `HasDummyFactory` trait supports defining dynamic state methods. You can define state methods in your class using the format `get{StateName}State` and call them dynamically on the factory:
 
 ```php
 namespace App\Data;
 
 use DateTime;
 use Faker\Generator;
-use DirectoryTree\Dummy\Data;
-use DirectoryTree\Dummy\HasFactory;
+use DirectoryTree\Dummy\DummyData;
+use DirectoryTree\Dummy\HasDummyFactory;
 
 /**
- * @use HasFactory<Reservation>
+ * @use HasDummyFactory<Reservation>
  */
 class Reservation
 {
-    use HasFactory;
+    use HasDummyFactory;
 
     public function __construct(
         public string $name,
@@ -226,8 +250,8 @@ class Reservation
         public string $status = 'pending',
         public string $type = 'standard',
     ) {}
-    
-     // Dynamic state methods...
+
+    // Dynamic state methods...
 
     public static function getConfirmedState(): array
     {
@@ -247,7 +271,7 @@ class Reservation
         return ['status' => 'cancelled'];
     }
 
-    protected static function toFactoryInstance(Data $attributes): self
+    protected static function toDummyInstance(DummyData $attributes): self
     {
         return new static(
             $attributes['name'],
@@ -258,7 +282,7 @@ class Reservation
         );
     }
 
-    protected static function getFactoryDefinition(Generator $faker): array
+    protected static function getDummyDefinition(Generator $faker): array
     {
         return [
             'name' => $faker->name(),
@@ -273,13 +297,13 @@ You can then use these state methods dynamically:
 
 ```php
 // Create a confirmed reservation
-$confirmed = Reservation::factory()->confirmed()->make();
+$confirmed = Reservation::dummy()->confirmed()->make();
 
 // Create a premium reservation
-$premium = Reservation::factory()->premium()->make();
+$premium = Reservation::dummy()->premium()->make();
 
 // Chain multiple states
-$premiumCancelled = Reservation::factory()->premium()->cancelled()->make();
+$premiumCancelled = Reservation::dummy()->premium()->cancelled()->make();
 ```
 
 ### Class Factory
@@ -333,7 +357,7 @@ Once you've defined a factory, you can generate dummy instances of your class us
 
 ```php
 // Using the trait:
-$reservation = Reservation::factory()->make();
+$reservation = Reservation::dummy()->make();
 
 // Using the factory class:
 $reservation = ReservationFactory::new()->make();
@@ -342,7 +366,7 @@ $reservation = ReservationFactory::new()->make();
 To add or override attributes in your definition, you may pass an array of attributes to the `make` method:
 
 ```php
-$reservation = Reservation::factory()->make([
+$reservation = Reservation::dummy()->make([
     'name' => 'John Doe',
 ]);
 ```
@@ -352,19 +376,19 @@ To generate multiple instances of the class, you may use the `count` method:
 > This will return an `Illuminate\Support\Collection` instance containing the generated classes.
 
 ```php
-$collection = Reservation::factory()->count(5)->make();
+$collection = Reservation::dummy()->count(5)->make();
 ```
 
 If you have a counted factory but need one instance, use `makeOne`:
 
 ```php
-$reservation = Reservation::factory()->count(5)->makeOne();
+$reservation = Reservation::dummy()->count(5)->makeOne();
 ```
 
 To make several instances with a different state record for each one, use `makeMany`:
 
 ```php
-$collection = Reservation::factory()->makeMany([
+$collection = Reservation::dummy()->makeMany([
     ['name' => 'Taylor Otwell'],
     ['name' => 'Nuno Maduro'],
 ]);
@@ -373,7 +397,7 @@ $collection = Reservation::factory()->makeMany([
 You may also defer generation by creating a lazy callback:
 
 ```php
-$makeReservation = Reservation::factory()->lazy([
+$makeReservation = Reservation::dummy()->lazy([
     'name' => 'John Doe',
 ]);
 
@@ -382,7 +406,7 @@ $reservation = $makeReservation();
 
 ### Factory States
 
-State manipulation methods allow you to define discrete modifications 
+State manipulation methods allow you to define discrete modifications
 that can be applied to your dummy factories in any combination.
 
 For example, your `App\Factories\Reservation` factory might contain a `tomorrow`
@@ -408,7 +432,7 @@ class ReservationFactory extends Factory
 You may prepend a state when you need it evaluated before the factory's existing states:
 
 ```php
-$reservation = Reservation::factory()
+$reservation = Reservation::dummy()
     ->tomorrow()
     ->prependState([
         'name' => 'Early State',
@@ -424,7 +448,7 @@ When Laravel's Eloquent is installed, Dummy will expand Eloquent model instances
 use App\Models\Company;
 use App\Models\User;
 
-$reservation = Reservation::factory()->make([
+$reservation = Reservation::dummy()->make([
     'company_id' => Company::factory(),
     'user_id' => User::factory()->create(),
 ]);
@@ -433,7 +457,7 @@ $reservation = Reservation::factory()->make([
 This also works for values returned from attribute closures, so dependent attributes can use previously expanded keys:
 
 ```php
-$reservation = Reservation::factory()->make([
+$reservation = Reservation::dummy()->make([
     'company_id' => Company::factory(),
     'user_id' => fn (array $attributes) => User::factory([
         'company_id' => $attributes['company_id'],
@@ -443,9 +467,9 @@ $reservation = Reservation::factory()->make([
 
 ### Factory Callbacks
 
-Factory callbacks are registered using the `afterMaking` method and allow you to perform 
+Factory callbacks are registered using the `afterMaking` method and allow you to perform
 additional tasks after making or creating a class. You should register these callbacks
-by defining a `configure` method on your factory class. This method will be 
+by defining a `configure` method on your factory class. This method will be
 automatically called when the factory is instantiated:
 
 ```php
@@ -475,15 +499,15 @@ $reservation = ReservationFactory::new()
 
 ### Factory Sequences
 
-Sometimes you may wish to alternate the value of a given attribute for each generated 
-class. 
+Sometimes you may wish to alternate the value of a given attribute for each generated
+class.
 
 You may accomplish this by defining a state transformation as a `sequence`:
 
 ```php
-Reservation::factory()
+Reservation::dummy()
     ->count(3)
-     ->sequence(
+    ->sequence(
         ['datetime' => new Datetime('tomorrow')],
         ['datetime' => new Datetime('next week')],
         ['datetime' => new Datetime('next month')],
@@ -525,22 +549,22 @@ Factory::macro('named', function (string $name) {
     ]);
 });
 
-$reservation = Reservation::factory()->named('John Doe')->make();
+$reservation = Reservation::dummy()->named('John Doe')->make();
 ```
 
 ### IDE Type Inference
 
 Dummy includes generic PHPDoc annotations so static analysis tools and IDEs can infer factory return types.
 
-When using the `HasFactory` trait, add an `@use` annotation to your class:
+When using the `HasDummyFactory` trait, add an `@use` annotation to your class:
 
 ```php
 /**
- * @use HasFactory<Reservation>
+ * @use HasDummyFactory<Reservation>
  */
 class Reservation
 {
-    use HasFactory;
+    use HasDummyFactory;
 
     // ...
 }
@@ -558,4 +582,4 @@ class ReservationFactory extends Factory
 }
 ```
 
-These annotations allow tools to infer that `Reservation::factory()->makeOne()` and `ReservationFactory::new()->makeOne()` return a `Reservation` instance.
+These annotations allow tools to infer that `Reservation::dummy()->makeOne()` and `ReservationFactory::new()->makeOne()` return a `Reservation` instance.

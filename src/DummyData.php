@@ -314,6 +314,7 @@ class DummyData implements ArrayAccess, IteratorAggregate, JsonSerializable
 
         return ! is_bool($value)
             && ! is_array($value)
+            && ! is_object($value)
             && trim((string) $value) === '';
     }
 

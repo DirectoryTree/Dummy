@@ -7,6 +7,7 @@ use DirectoryTree\Dummy\Tests\Fixtures\FactoryStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryWithConfigurationStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryWithCustomClassStub;
 use DirectoryTree\Dummy\Tests\Fixtures\FactoryWithStateStub;
+use Faker\Generator;
 use Illuminate\Support\Collection;
 
 it('can generate single instance', function () {
@@ -330,7 +331,7 @@ it('uses a custom using callback to build instances', function () {
 });
 
 it('exposes a faker generator instance', function () {
-    expect(FactoryStub::new()->faker())->toBeInstanceOf(Faker\Generator::class);
+    expect(FactoryStub::new()->faker())->toBeInstanceOf(Generator::class);
 });
 
 it('throws when calling state methods on a factory without a bound class', function () {

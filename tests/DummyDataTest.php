@@ -131,12 +131,14 @@ it('can determine if attributes are filled', function () {
         'zero' => 0,
         'false' => false,
         'array' => [],
+        'object' => new DateTime,
     ]);
 
     expect($data->filled('name'))->toBeTrue();
     expect($data->filled('zero'))->toBeTrue();
     expect($data->filled('false'))->toBeTrue();
     expect($data->filled('array'))->toBeTrue();
+    expect($data->filled('object'))->toBeTrue();
     expect($data->filled('empty'))->toBeFalse();
     expect($data->filled('spaces'))->toBeFalse();
     expect($data->filled('missing'))->toBeFalse();

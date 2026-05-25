@@ -268,3 +268,126 @@ it('can use macros', function () {
         FactoryStub::flushMacros();
     }
 });
+
+it('can build a factory with a count via times', function () {
+    $collection = FactoryStub::times(3)->make();
+
+    expect($collection)->toBeInstanceOf(Collection::class);
+    expect($collection)->toHaveCount(3);
+});
+
+it('returns a single flat attributes array from raw when no count is set', function () {
+    $raw = FactoryStub::new()->raw();
+
+    expect($raw)->toBeArray();
+    expect($raw)->toHaveKeys(['name', 'email']);
+    expect($raw['name'])->toBeString();
+});
+
+it('accepts a callable for raw attributes', function () {
+    $raw = FactoryStub::new()->raw(fn (array $attributes) => [
+        'name' => 'Callable',
+        'derived' => $attributes['email'],
+    ]);
+
+    expect($raw['name'])->toBe('Callable');
+    expect($raw['derived'])->toBe($raw['email']);
+});
+
+it('returns an empty collection when make is called with a count below one', function () {
+    $collection = FactoryStub::new()->count(0)->make();
+
+    expect($collection)->toBeInstanceOf(Collection::class);
+    expect($collection)->toBeEmpty();
+});
+
+it('sets the count from the sequence size via forEachSequence', function () {
+    $collection = FactoryStub::new()
+        ->forEachSequence(
+            ['id' => 1],
+            ['id' => 2],
+            ['id' => 3],
+        )
+        ->make();
+
+    expect($collection)->toHaveCount(3);
+    expect($collection[0]->id)->toBe(1);
+    expect($collection[1]->id)->toBe(2);
+    expect($collection[2]->id)->toBe(3);
+});
+
+it('uses a custom using callback to build instances', function () {
+    $instance = FactoryStub::new()
+        ->using(fn ($faker, array $attributes) => new FactoryClassStub(
+            $attributes['name'],
+            $attributes['email'],
+        ))
+        ->make();
+
+    expect($instance)->toBeInstanceOf(FactoryClassStub::class);
+    expect($instance->name)->toBeString();
+    expect($instance->email)->toBeString();
+});
+
+it('exposes a faker generator instance', function () {
+    expect(FactoryStub::new()->faker())->toBeInstanceOf(Faker\Generator::class);
+});
+
+it('throws when calling state methods on a factory without a bound class', function () {
+    expect(fn () => FactoryStub::new()->admin())
+        ->toThrow(BadMethodCallException::class, 'Cannot call state methods on a factory without a using class.');
+});
+
+it('throws when the state method does not exist on the bound class', function () {
+    expect(fn () => FactoryWithCustomClassStub::new()->nonExistent())
+        ->toThrow(BadMethodCallException::class);
+});
+
+it('applies state conditionally via when', function () {
+    $applied = FactoryStub::new()
+        ->when(true, fn ($factory) => $factory->set('flag', 'on'))
+        ->make();
+
+    $skipped = FactoryStub::new()
+        ->when(false, fn ($factory) => $factory->set('flag', 'on'))
+        ->make();
+
+    expect($applied->flag)->toBe('on');
+    expect($skipped->flag)->toBeNull();
+});
+
+it('applies state conditionally via unless', function () {
+    $applied = FactoryStub::new()
+        ->unless(false, fn ($factory) => $factory->set('flag', 'on'))
+        ->make();
+
+    $skipped = FactoryStub::new()
+        ->unless(true, fn ($factory) => $factory->set('flag', 'on'))
+        ->make();
+
+    expect($applied->flag)->toBe('on');
+    expect($skipped->flag)->toBeNull();
+});
+
+it('defaults makeMany to a single instance when no count or records are given', function () {
+    $collection = FactoryStub::new()->makeMany();
+
+    expect($collection)->toBeInstanceOf(Collection::class);
+    expect($collection)->toHaveCount(1);
+});
+
+it('uses the existing count when makeMany receives no records', function () {
+    $collection = FactoryStub::new()->count(4)->makeMany();
+
+    expect($collection)->toHaveCount(4);
+});
+
+it('binds state closures to the factory instance', function () {
+    $instance = FactoryStub::new()
+        ->state(function () {
+            return ['generated' => $this->faker()->name()];
+        })
+        ->make();
+
+    expect($instance->generated)->toBeString()->not->toBeEmpty();
+});

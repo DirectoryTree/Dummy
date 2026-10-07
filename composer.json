@@ -4,7 +4,11 @@
     "license": "MIT",
     "archive": {
         "exclude": [
-            "/tests"
+            "/.DS_Store",
+            "/.idea",
+            "/composer.lock",
+            "/tests",
+            "/vendor"
         ]
     },
     "autoload": {

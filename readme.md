@@ -1,21 +1,27 @@
 <p align="center">
-<img src="https://github.com/DirectoryTree/Dummy/blob/master/art/logo.svg" width="250">
+    <img src="https://github.com/DirectoryTree/Dummy/blob/master/art/logo.svg" width="300" alt="Dummy">
+</p>
+
+<p align="center">Generate PHP class instances populated with fake dummy data using <a href="https://github.com/FakerPHP/Faker">Faker</a>.</p>
+
+<p align="center">
+    <a href="https://github.com/DirectoryTree/Dummy/actions/workflows/run-tests.yml"><img src="https://img.shields.io/github/actions/workflow/status/DirectoryTree/Dummy/run-tests.yml?branch=master&amp;style=flat-square" alt="Tests"></a>
+    <a href="https://packagist.org/packages/directorytree/dummy"><img src="https://img.shields.io/packagist/dt/directorytree/dummy.svg?style=flat-square" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/directorytree/dummy"><img src="https://img.shields.io/packagist/v/directorytree/dummy.svg?style=flat-square" alt="Latest Version"></a>
+    <a href="https://github.com/DirectoryTree/Dummy/blob/master/license.md"><img src="https://img.shields.io/github/license/DirectoryTree/Dummy?style=flat-square" alt="License"></a>
 </p>
 
 <p align="center">
-Generate PHP class instances populated with fake dummy data using <a href="https://github.com/FakerPHP/Faker" target="_blank">Faker</a>
-</p>
-
-<p align="center">
-<a href="https://github.com/directorytree/dummy/actions" target="_blank"><img src="https://img.shields.io/github/actions/workflow/status/directorytree/dummy/run-tests.yml?branch=master&style=flat-square"/></a>
-<a href="https://packagist.org/packages/directorytree/dummy" target="_blank"><img src="https://img.shields.io/packagist/v/directorytree/dummy.svg?style=flat-square"/></a>
-<a href="https://packagist.org/packages/directorytree/dummy" target="_blank"><img src="https://img.shields.io/packagist/dt/directorytree/dummy.svg?style=flat-square"/></a>
-<a href="https://packagist.org/packages/directorytree/dummy" target="_blank"><img src="https://img.shields.io/packagist/l/directorytree/dummy.svg?style=flat-square"/></a>
+    <a href="#contents">Contents</a>
+    <span> · </span>
+    <a href="#installation">Installation</a>
+    <span> · </span>
+    <a href="#usage">Usage</a>
 </p>
 
 ---
 
-## Index
+## Contents
 
 - [Requirements](#requirements)
 - [Installation](#installation)
